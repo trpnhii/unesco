@@ -42,7 +42,6 @@ import briefIntroPanel from '../assets/Screen 4_ LV1 - Case Brief/case-intro-pan
 import briefAccountCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-account.png'
 import briefSourceCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-source.png'
 import briefFeedbackCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-feedback.png'
-import briefInfoStrip from '../assets/Screen 4_ LV1 - Case Brief/brief-info-strip.png'
 import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-button.png'
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
@@ -362,11 +361,10 @@ export function CaseBrief() {
               <img src={briefSourceCard} alt="Step 2: Check the source" />
               <img src={briefFeedbackCard} alt="Step 3: Check feedback" />
             </div>
-            <img
-              className="brief-info-strip"
-              src={briefInfoStrip}
-              alt="Complete all three steps to become a Digital Explorer."
-            />
+            <div className="brief-info-strip">
+              <span>💡</span>
+              Complete all 3 steps to become a Digital Explorer!
+            </div>
           </section>
           <button
             type="button"
