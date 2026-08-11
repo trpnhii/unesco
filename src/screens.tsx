@@ -44,6 +44,7 @@ import briefSourceCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-s
 import briefFeedbackCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-feedback.png'
 import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-button.png'
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
+import step1SourceCard from '../assets/Screen 5_ LV1 - Step 1/source-account-card.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
 
@@ -386,6 +387,7 @@ export function Step1Account() {
 
   const placed = Object.values(step1).filter(Boolean).length
   const unplaced = EVIDENCE.filter((e) => !step1[e.id])
+  const evidenceIcons = ['👤', '🔥', '🖼️', '📄', '💬', '✈️', '📊', '📣', '✅']
 
   function onDrop(cat: EvidenceCategory) {
     if (dragId) {
@@ -397,9 +399,9 @@ export function Step1Account() {
 
   return (
     <div
-      className="screen invest scene-asset"
+      className="screen invest step1-screen scene-asset"
       style={{
-        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${stepOneArt}")`,
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .16), rgba(12, 25, 43, .44)), url("${stepOneArt}")`,
       }}
     >
       <Hud
@@ -408,74 +410,41 @@ export function Step1Account() {
         mission="INVESTIGATE BEFORE SHARING"
         step={1}
       />
-      <div className="invest__guide">
-        <div className="avatar">🕵️</div>
-        <div className="invest__guide-body">
-          <strong>STEP 1: CHECK THE ACCOUNT</strong>
-          <p>Drag each clue, or select a tile and then choose a category.</p>
+      <div className="step1-briefing">
+        <div className="step1-title-card">
+          <span>🔎</span>
+          <div>
+            <strong>STEP 1: CHECK THE ACCOUNT</strong>
+            <small>Investigate the source before trusting the post.</small>
+          </div>
         </div>
-        <div className="invest__warn">⚠ Sharing early costs 10 points!</div>
+        <div className="step1-instruction-card">
+          <span className="step1-scout">🕵️</span>
+          <p>
+            Read each piece of information about this account.
+            <br />
+            Decide if it shows misinformation risk.
+            <br />
+            Drag it to the correct category.
+          </p>
+          <div className="step1-risk">❗ If you share before finishing, you lose points!</div>
+        </div>
       </div>
 
       <div className="invest__body invest__body--step1">
-        <div className="panel profile">
-          <div className="profile__avatar">🦊</div>
-          <div className="profile__name">VN Expose Now</div>
-          <div className="profile__handle">@vn.expose.now</div>
-          <div className="profile__stats">
-            <div>
-              <strong>12</strong>
-              <span>Posts</span>
-            </div>
-            <div>
-              <strong>48.2K</strong>
-              <span>Followers</span>
-            </div>
-            <div>
-              <strong>3</strong>
-              <span>Following</span>
-            </div>
-          </div>
-          <div className="flag-list">
-            <h5>RED FLAGS</h5>
-            <ul>
-              <li>Account age: 3 days</li>
-              <li>Clickbait display name</li>
-              <li>Explosive follower jump</li>
-            </ul>
-          </div>
-          <div className="panel__title">Recent posts</div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {['🚨', '📢', '⚠️'].map((e, i) => (
-              <div
-                key={i}
-                style={{
-                  flex: 1,
-                  height: 56,
-                  background: '#fdecea',
-                  borderRadius: 6,
-                  display: 'grid',
-                  placeItems: 'center',
-                  fontSize: '1.2rem',
-                  border: '2px solid #f5b7b1',
-                }}
-              >
-                {e}
-              </div>
-            ))}
-          </div>
+        <div className="step1-source-card">
+          <img src={step1SourceCard} alt="Source investigation account profile" />
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Sort the evidence</div>
+        <div className="panel step1-workspace">
           <div className="bins">
             {(
               [
-                ['misleading', 'Misleading', 'bin--misleading'],
-                ['neutral', 'Neutral', 'bin--neutral'],
-                ['reliable', 'Reliable', 'bin--reliable'],
+                ['misleading', 'Misleading / Untrustworthy', 'bin--misleading', '❗', 'Strong signs this source is not reliable.'],
+                ['neutral', 'Neutral / Not enough info', 'bin--neutral', '❓', "Doesn't prove anything yet."],
+                ['reliable', 'Reliable / Not misleading', 'bin--reliable', '✅', 'Looks trustworthy and well-supported.'],
               ] as const
-            ).map(([key, label, cls]) => {
+            ).map(([key, label, cls, icon, description]) => {
               const items = EVIDENCE.filter((e) => step1[e.id] === key)
               return (
                 <div
@@ -494,7 +463,11 @@ export function Step1Account() {
                   }}
                   onClick={() => onDrop(key)}
                 >
-                  <div className="bin__head">{label}</div>
+                  <div className="bin__head">
+                    <span>{icon}</span>
+                    {label}
+                  </div>
+                  <div className="bin__description">{description}</div>
                   {items.length === 0 ? <div className="bin__empty">Drag here</div> : null}
                   {items.map((e) => (
                     <div
@@ -509,7 +482,10 @@ export function Step1Account() {
                       onDoubleClick={() => placeEvidence(e.id, null)}
                       title="Double-click to return"
                     >
-                      {e.text}
+                      <span className="tile__icon">
+                        {evidenceIcons[EVIDENCE.findIndex((item) => item.id === e.id)]}
+                      </span>
+                      <span className="tile__text">{e.text}</span>
                     </div>
                   ))}
                 </div>
@@ -517,7 +493,6 @@ export function Step1Account() {
             })}
           </div>
 
-          <div className="panel__title">Evidence tiles ({unplaced.length} left)</div>
           <div className="tile-pool">
             {unplaced.map((e, i) => (
               <div
@@ -529,8 +504,9 @@ export function Step1Account() {
                 onDragStart={() => setDragId(e.id)}
                 onClick={() => setDragId((current) => (current === e.id ? null : e.id))}
               >
+                <span className="tile__icon">{evidenceIcons[EVIDENCE.indexOf(e)]}</span>
+                <span className="tile__text">{e.text}</span>
                 <span className="tile__handle">⠿</span>
-                {e.text}
               </div>
             ))}
           </div>
@@ -538,6 +514,7 @@ export function Step1Account() {
       </div>
 
       <div className="invest__footer">
+        <div className="step1-tip">💡 Unverified sources often show multiple warning signs.</div>
         <div className="bonus">⭐ Sort carefully · +10 if all correct ({scoreStep1()}/9)</div>
         <div className="progress-mini">
           PROGRESS · {placed}/9
