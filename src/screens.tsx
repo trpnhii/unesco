@@ -46,7 +46,41 @@ import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-b
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import step1SourceCard from '../assets/Screen 5_ LV1 - Step 1/source-account-card.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
+import step2Title from '../assets/Screen 6_ LV1 - Step 2/step2-title.png'
+import step2Instruction from '../assets/Screen 6_ LV1 - Step 2/step2-instruction.png'
+import step2Warn from '../assets/Screen 6_ LV1 - Step 2/step2-warn.png'
+import step2Phone from '../assets/Screen 6_ LV1 - Step 2/step2-phone.png'
+import step2Tip from '../assets/Screen 6_ LV1 - Step 2/step2-tip.png'
+import step2Bonus from '../assets/Screen 6_ LV1 - Step 2/step2-bonus.png'
+import step2BtnSave from '../assets/Screen 6_ LV1 - Step 2/btn-save.png'
+import step2BtnShare from '../assets/Screen 6_ LV1 - Step 2/btn-share.png'
+import step2Clue1 from '../assets/Screen 6_ LV1 - Step 2/clue-1.png'
+import step2Clue2 from '../assets/Screen 6_ LV1 - Step 2/clue-2.png'
+import step2Clue3 from '../assets/Screen 6_ LV1 - Step 2/clue-3.png'
+import step2Clue4 from '../assets/Screen 6_ LV1 - Step 2/clue-4.png'
+import step2Clue5 from '../assets/Screen 6_ LV1 - Step 2/clue-5.png'
+import step2CatManipulation from '../assets/Screen 6_ LV1 - Step 2/cat-manipulation.png'
+import step2CatEmotional from '../assets/Screen 6_ LV1 - Step 2/cat-emotional.png'
+import step2CatEvidence from '../assets/Screen 6_ LV1 - Step 2/cat-evidence.png'
+import step2CatIntent from '../assets/Screen 6_ LV1 - Step 2/cat-intent.png'
+import step2CatOther from '../assets/Screen 6_ LV1 - Step 2/cat-other.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
+
+const STEP2_CLUE_ART: Record<string, string> = {
+  c1: step2Clue1,
+  c2: step2Clue4,
+  c3: step2Clue3,
+  c4: step2Clue2,
+  c5: step2Clue5,
+}
+
+const STEP2_CAT_ART: Record<ClueCategory, string> = {
+  manipulation: step2CatManipulation,
+  emotional: step2CatEmotional,
+  no_evidence: step2CatEvidence,
+  urgency: step2CatIntent,
+  source: step2CatOther,
+}
 
 const NODE_POS: Record<number, { x: string; y: string }> = {
   1: { x: '24%', y: '37%' },
@@ -565,9 +599,9 @@ export function Step2Post() {
 
   return (
     <div
-      className="screen invest scene-asset"
+      className="screen invest step2-screen scene-asset"
       style={{
-        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${investigationArt}")`,
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .18), rgba(12, 25, 43, .48)), url("${investigationArt}")`,
       }}
     >
       <Hud
@@ -576,126 +610,120 @@ export function Step2Post() {
         mission="INVESTIGATE BEFORE SHARING"
         step={2}
       />
-      <div className="invest__guide">
-        <div className="avatar">🕵️</div>
-        <div className="invest__guide-body">
-          <strong>STEP 2: CHECK THE POST</strong>
-          <p>Drag clues to categories, or select a clue and click its category.</p>
-        </div>
-        <div className="invest__warn">⚠ Sharing early costs 10 points!</div>
+
+      <div className="step2-briefing">
+        <img className="step2-title-img" src={step2Title} alt="Step 2: Check the post" />
+        <img
+          className="step2-instruction-img"
+          src={step2Instruction}
+          alt="Read the caption and clues inside the post. Drag each clue to the correct category."
+        />
+        <img
+          className="step2-warn-img"
+          src={step2Warn}
+          alt="If you share before finishing all steps, you will lose points!"
+        />
       </div>
 
       <div className="invest__body invest__body--step2">
-        <div className="panel" style={{ display: 'grid', placeItems: 'center' }}>
-          <PhonePost image={investigationArt} />
+        <div className="step2-phone-wrap">
+          <img className="step2-phone-img" src={step2Phone} alt="Social post preview" />
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Clue blocks (drag to categories)</div>
+        <div className="step2-clues">
+          <div className="step2-panel-title">Clue blocks (drag to categories)</div>
           <div className="clue-stack">
             {unplaced.map((c, i) => (
-              <div
+              <button
                 key={c.id}
-                className={`tile ${TILE_COLORS[i % TILE_COLORS.length]}${
-                  dragId === c.id ? ' is-selected' : i === 0 ? ' demo-highlight-item' : ''
+                type="button"
+                className={`step2-clue-art${dragId === c.id ? ' is-selected' : ''}${
+                  i === 0 ? ' demo-highlight-item' : ''
                 }`}
                 draggable
                 onDragStart={() => setDragId(c.id)}
                 onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
               >
-                <span className="tile__handle">⠿</span>
-                {c.text}
-              </div>
+                <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
+              </button>
             ))}
             {unplaced.length === 0 ? (
-              <p style={{ fontWeight: 800, color: 'var(--green-deep)', fontSize: '0.85rem' }}>
-                All clues placed — double-click a clue to move it back.
-              </p>
+              <p className="step2-all-done">All clues placed — double-click a clue to move it back.</p>
             ) : null}
           </div>
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Categories</div>
+        <div className="step2-categories">
           <div className="cat-list">
             {categories.map((cat) => {
-              const meta = CLUE_LABELS[cat]
               const items = CLUES.filter((c) => step2[c.id] === cat)
               return (
-                <div key={cat} className="cat-row">
-                  <div className="cat-label">
-                    <span>{meta.icon}</span>
-                    {meta.title}
-                  </div>
-                  <div
-                    className={`cat-drop${over === cat ? ' is-over' : ''}${
-                      dragId ? ' is-demo-target' : ''
-                    }`}
-                    onDragOver={(ev) => {
-                      ev.preventDefault()
-                      setOver(cat)
-                    }}
-                    onDragLeave={() => setOver(null)}
-                    onDrop={(ev) => {
-                      ev.preventDefault()
-                      onDrop(cat)
-                    }}
-                    onClick={() => onDrop(cat)}
-                  >
-                    {items.length === 0 ? (
-                      <div className="cat-drop__empty">Drag here</div>
-                    ) : (
-                      items.map((c) => (
-                        <div
-                          key={c.id}
-                          className="tile"
-                          style={{ fontSize: '0.65rem', padding: '0.35rem' }}
-                          draggable
-                          onDragStart={() => setDragId(c.id)}
-                          onClick={(ev) => {
-                            ev.stopPropagation()
-                            setDragId(c.id)
-                          }}
-                          onDoubleClick={() => placeClue(c.id, null)}
-                        >
-                          {c.text}
-                        </div>
-                      ))
-                    )}
+                <div
+                  key={cat}
+                  className={`step2-cat-art${over === cat ? ' is-over' : ''}${
+                    dragId ? ' is-demo-target' : ''
+                  }`}
+                  onDragOver={(ev) => {
+                    ev.preventDefault()
+                    setOver(cat)
+                  }}
+                  onDragLeave={() => setOver(null)}
+                  onDrop={(ev) => {
+                    ev.preventDefault()
+                    onDrop(cat)
+                  }}
+                  onClick={() => onDrop(cat)}
+                >
+                  <img src={STEP2_CAT_ART[cat]} alt={CLUE_LABELS[cat].title} draggable={false} />
+                  <div className="step2-cat-art__drop">
+                    {items.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className="step2-clue-art step2-clue-art--placed"
+                        draggable
+                        onDragStart={() => setDragId(c.id)}
+                        onClick={(ev) => {
+                          ev.stopPropagation()
+                          setDragId(c.id)
+                        }}
+                        onDoubleClick={() => placeClue(c.id, null)}
+                      >
+                        <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
+                      </button>
+                    ))}
                   </div>
                 </div>
               )
             })}
           </div>
+          <img className="step2-tip-img" src={step2Tip} alt="Tip: take time to think and check the facts before sharing" />
         </div>
       </div>
 
-      <div className="invest__footer">
-        <div className="bonus">⭐ Correct categories · {scoreStep2()}/5</div>
-        <div className="progress-mini">
-          PROGRESS · {placed}/5
-          <div className="bar">
-            <div style={{ width: `${(placed / 5) * 100}%` }} />
-          </div>
+      <div className="invest__footer step2-footer">
+        <div className="step2-bonus-wrap">
+          <img className="step2-bonus-img" src={step2Bonus} alt="Progress bonus" />
+          <span className="step2-bonus-score">{scoreStep2()}/5</span>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="step2-actions">
           <button
             type="button"
-            className={`btn btn--blue${placed === 5 ? ' demo-highlight' : ''}`}
+            className={`step2-img-btn${placed === 5 ? ' demo-highlight' : ''}`}
             disabled={placed < 5}
             onClick={() => go('step3')}
           >
-            💾 SAVE & CONTINUE
+            <img src={step2BtnSave} alt="Save and continue" />
           </button>
           <button
             type="button"
-            className="btn btn--danger"
+            className="step2-img-btn"
             onClick={() => {
               shareRisk()
               go('results')
             }}
           >
-            ✈️ SHARE NOW (−10)
+            <img src={step2BtnShare} alt="Share now, risk minus 10 points" />
           </button>
         </div>
       </div>

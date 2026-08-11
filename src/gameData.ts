@@ -59,11 +59,11 @@ export const EVIDENCE: EvidenceItem[] = [
 ]
 
 export const CLUES: ClueItem[] = [
-  { id: 'c1', text: 'Dramatic stock-style photo, no location stamp', correct: 'manipulation' },
-  { id: 'c2', text: 'ALL-CAPS fear headline over a normal scene', correct: 'emotional' },
-  { id: 'c3', text: 'No names, no police report, no source link', correct: 'no_evidence' },
-  { id: 'c4', text: '"Share before it\'s too late!!" CTA', correct: 'urgency' },
-  { id: 'c5', text: 'Anonymous "hotnews" handle, not a real outlet', correct: 'source' },
+  { id: 'c1', text: 'The image has signs of editing (people, objects).', correct: 'manipulation' },
+  { id: 'c2', text: 'Emotional language, provokes fear.', correct: 'emotional' },
+  { id: 'c3', text: 'No official source or verification.', correct: 'no_evidence' },
+  { id: 'c4', text: 'Sensational headline, clickbait.', correct: 'urgency' },
+  { id: 'c5', text: 'No time or location details.', correct: 'source' },
 ]
 
 export const COMMENTS: CommentItem[] = [
@@ -117,12 +117,40 @@ export const COMMENTS: CommentItem[] = [
   },
 ]
 
-export const CLUE_LABELS: Record<ClueCategory, { title: string; icon: string }> = {
-  manipulation: { title: 'Content Manipulation', icon: '🖼️' },
-  emotional: { title: 'Emotional Framing', icon: '💔' },
-  no_evidence: { title: 'Lack of Evidence', icon: '📎' },
-  urgency: { title: 'Urgency / Pressure', icon: '⏰' },
-  source: { title: 'Unreliable Source', icon: '🕵️' },
+export const CLUE_LABELS: Record<
+  ClueCategory,
+  { title: string; icon: string; description: string; tone: string }
+> = {
+  manipulation: {
+    title: 'Content Manipulation',
+    icon: '🖼️',
+    description: 'Signs of AI or photo editing.',
+    tone: 'cat--red',
+  },
+  emotional: {
+    title: 'Emotional Framing',
+    icon: '💔',
+    description: 'Elements intended to trigger strong emotions.',
+    tone: 'cat--orange',
+  },
+  no_evidence: {
+    title: 'Lack of Evidence',
+    icon: '📎',
+    description: 'Missing sources or evidence.',
+    tone: 'cat--yellow',
+  },
+  urgency: {
+    title: 'Intent to Manipulate',
+    icon: '📣',
+    description: 'Signs of driving engagement or leading opinion.',
+    tone: 'cat--green',
+  },
+  source: {
+    title: 'Other / Unclear',
+    icon: '❓',
+    description: 'Factors that are uncertain.',
+    tone: 'cat--blue',
+  },
 }
 
 export const COMMENT_LABELS: Record<CommentCategory, { title: string; icon: string; color: string }> = {

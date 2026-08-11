@@ -159,7 +159,13 @@ export function MarketScene({ desk = false }: { desk?: boolean }) {
   )
 }
 
-export function PhonePost({ image }: { image?: string }) {
+export function PhonePost({
+  image,
+  placeholder,
+}: {
+  image?: string
+  placeholder?: boolean
+}) {
   return (
     <div className="phone">
       <div className="phone__notch" />
@@ -172,20 +178,27 @@ export function PhonePost({ image }: { image?: string }) {
           </div>
         </div>
         <div
-          className="phone__img"
+          className={`phone__img${placeholder ? ' phone__img--placeholder' : ''}`}
           style={
-            image
+            image && !placeholder
               ? {
                   backgroundImage: `linear-gradient(rgba(0, 0, 0, .18), rgba(0, 0, 0, .62)), url("${image}")`,
                 }
               : undefined
           }
         >
-          BẾN THÀNH MARKET NOT SAFE ANYMORE!
+          {placeholder ? (
+            <>
+              <span>📷</span>
+              <small>DRAG / TAP TO ADD IMAGE FOR COMPARISON</small>
+            </>
+          ) : (
+            'BẾN THÀNH MARKET NOT SAFE ANYMORE!'
+          )}
         </div>
         <div className="phone__caption">
-          Avoid Ben Thanh today!! Multiple witnesses report chaos — share before it&apos;s too late.
-          #BenThanhMarket #NotSafe
+          <strong>SHOCKING:</strong> Ben Thanh Market closed today! Tourists be careful! Share
+          before it&apos;s too late. #BenThanhMarket #NotSafe
         </div>
         <div className="phone__meta">
           <span>❤️ 1.2K</span>
