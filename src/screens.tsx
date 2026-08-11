@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Hud, MarketScene, PhonePost, Tip } from './components'
+import { Hud, PhonePost, Tip } from './components'
 import {
   ASIA_NODES,
   CLUES,
@@ -13,6 +13,12 @@ import {
   type EvidenceCategory,
 } from './gameData'
 import { useGame } from './GameContext'
+import worldMapArt from '../assets/Screen 1_ Chọn vùng (location)/Image 20_23_37.png'
+import oceanArt from '../assets/Screen 1_ Chọn vùng (location)/Image 20_59_16.png'
+import introArt from '../assets/Screen 4_ LV1 - Case Brief/Image 20_56_43.png'
+import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
+import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
+import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
 
 const NODE_POS: Record<number, { x: string; y: string }> = {
   1: { x: '22%', y: '62%' },
@@ -42,7 +48,10 @@ export function WorldMap() {
   const { go } = useGame()
 
   return (
-    <div className="screen scene-ocean">
+    <div
+      className="screen scene-ocean scene-asset"
+      style={{ backgroundImage: `url("${oceanArt}")` }}
+    >
       <Hud />
       <div className="world">
         <div className="world__title-bar">
@@ -60,7 +69,8 @@ export function WorldMap() {
         </div>
 
         <div className="world__map">
-          <div className="continents">
+          <div className="continents continents--art">
+            <img className="continents__asset" src={worldMapArt} alt="" aria-hidden="true" />
             <span className="ocean-deco" style={{ left: '12%', top: '18%' }}>
               ☁️
             </span>
@@ -115,7 +125,10 @@ export function AsiaMap() {
   const progress = asiaStars > 0 ? 1 : 0
 
   return (
-    <div className="screen scene-ocean">
+    <div
+      className="screen scene-ocean scene-asset"
+      style={{ backgroundImage: `url("${oceanArt}")` }}
+    >
       <Hud backTo="world" />
       <div className="asia">
         <aside className="asia__side">
@@ -197,10 +210,12 @@ export function MissionIntro() {
   const { go } = useGame()
 
   return (
-    <div className="screen scene-market">
+    <div
+      className="screen scene-market scene-asset"
+      style={{ backgroundImage: `url("${introArt}")` }}
+    >
       <Hud backTo="asia" />
       <div className="intro">
-        <MarketScene desk />
         <div className="pixel-box pixel-box--parchment intro__mission">
           <span className="paperclip">📎</span>
           <div className="ribbon">MISSION</div>
@@ -225,10 +240,12 @@ export function CaseBrief() {
   const { go } = useGame()
 
   return (
-    <div className="screen scene-market">
+    <div
+      className="screen scene-market scene-asset"
+      style={{ backgroundImage: `url("${introArt}")` }}
+    >
       <Hud backTo="intro" />
       <div className="brief">
-        <MarketScene />
         <div className="pixel-box pixel-box--parchment brief__modal">
           <div className="brief__banners">
             <div className="ribbon">★ ASIA ADVENTURE ★</div>
@@ -300,7 +317,12 @@ export function Step1Account() {
   }
 
   return (
-    <div className="screen invest">
+    <div
+      className="screen invest scene-asset"
+      style={{
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${stepOneArt}")`,
+      }}
+    >
       <Hud
         backTo="brief"
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
@@ -484,7 +506,12 @@ export function Step2Post() {
   }
 
   return (
-    <div className="screen invest">
+    <div
+      className="screen invest scene-asset"
+      style={{
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${investigationArt}")`,
+      }}
+    >
       <Hud
         backTo="step1"
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
@@ -502,7 +529,7 @@ export function Step2Post() {
 
       <div className="invest__body invest__body--step2">
         <div className="panel" style={{ display: 'grid', placeItems: 'center' }}>
-          <PhonePost />
+          <PhonePost image={investigationArt} />
         </div>
 
         <div className="panel">
@@ -639,7 +666,12 @@ export function Step3Comments() {
   }
 
   return (
-    <div className="screen invest">
+    <div
+      className="screen invest scene-asset"
+      style={{
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${investigationArt}")`,
+      }}
+    >
       <Hud
         backTo="step2"
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
@@ -657,7 +689,7 @@ export function Step3Comments() {
 
       <div className="invest__body invest__body--step3">
         <div className="panel" style={{ display: 'grid', placeItems: 'center' }}>
-          <PhonePost />
+          <PhonePost image={investigationArt} />
         </div>
 
         <div className="panel">
@@ -835,7 +867,12 @@ export function Results() {
   return (
     <div className="screen">
       <Hud backTo="step3" caseTitle="IS BẾN THÀNH MARKET UNSAFE?" mission="MISSION REVIEW" />
-      <div className="results">
+      <div
+        className="results scene-asset"
+        style={{
+          backgroundImage: `linear-gradient(rgba(12, 25, 43, .74), rgba(12, 25, 43, .86)), url("${resultArt}")`,
+        }}
+      >
         <div className="results__banner">
           <span style={{ fontSize: '2rem' }}>✅</span>
           <div>
@@ -988,10 +1025,12 @@ export function StageComplete() {
   const s3 = scoreStep3()
 
   return (
-    <div className="screen scene-market">
+    <div
+      className="screen scene-market scene-asset"
+      style={{ backgroundImage: `url("${resultArt}")` }}
+    >
       <Hud backTo="results" />
       <div className="complete">
-        <MarketScene />
         <div className="pixel-box pixel-box--parchment complete__panel">
           <div className="ribbon">★ STAGE CLEAR ★</div>
           <h2>STAGE 1 COMPLETE!</h2>

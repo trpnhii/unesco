@@ -156,7 +156,7 @@ export function MarketScene({ desk = false }: { desk?: boolean }) {
   )
 }
 
-export function PhonePost() {
+export function PhonePost({ image }: { image?: string }) {
   return (
     <div className="phone">
       <div className="phone__notch" />
@@ -168,7 +168,18 @@ export function PhonePost() {
             <span>3h · Ho Chi Minh City</span>
           </div>
         </div>
-        <div className="phone__img">BẾN THÀNH MARKET NOT SAFE ANYMORE!</div>
+        <div
+          className="phone__img"
+          style={
+            image
+              ? {
+                  backgroundImage: `linear-gradient(rgba(0, 0, 0, .18), rgba(0, 0, 0, .62)), url("${image}")`,
+                }
+              : undefined
+          }
+        >
+          BẾN THÀNH MARKET NOT SAFE ANYMORE!
+        </div>
         <div className="phone__caption">
           Avoid Ben Thanh today!! Multiple witnesses report chaos — share before it&apos;s too late.
           #BenThanhMarket #NotSafe

@@ -183,10 +183,10 @@ export const ASIA_NODES = [
 ]
 
 export const WORLD_REGIONS = [
-  { id: 'na', name: 'North America', x: 18, y: 32, color: '#5cb85c', emoji: '🗽', locked: true },
-  { id: 'sa', name: 'South America', x: 28, y: 62, color: '#48a868', emoji: '🗿', locked: true },
+  { id: 'na', name: 'North America', x: 18, y: 30, color: '#5cb85c', emoji: '🗽', locked: true },
+  { id: 'sa', name: 'South America', x: 18, y: 69, color: '#48a868', emoji: '🗿', locked: true },
   { id: 'eu', name: 'Europe', x: 50, y: 28, color: '#6eb5ff', emoji: '🗼', locked: true },
-  { id: 'af', name: 'Africa', x: 52, y: 52, color: '#d4a017', emoji: '🏺', locked: true },
-  { id: 'as', name: 'Asia', x: 72, y: 36, color: '#e67e22', emoji: '🗻', locked: false },
-  { id: 'oc', name: 'Oceania', x: 82, y: 68, color: '#9b59b6', emoji: '🎭', locked: true },
+  { id: 'af', name: 'Africa', x: 50, y: 68, color: '#d4a017', emoji: '🏺', locked: true },
+  { id: 'as', name: 'Asia', x: 82, y: 30, color: '#e67e22', emoji: '🗻', locked: false },
+  { id: 'oc', name: 'Oceania', x: 82, y: 72, color: '#9b59b6', emoji: '🎭', locked: true },
 ]
