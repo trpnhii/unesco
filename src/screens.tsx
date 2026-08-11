@@ -21,6 +21,7 @@ import tajMahalArt from '../assets/Screen 2_ Chọn level/taj-mahal.png'
 import greatWallArt from '../assets/Screen 2_ Chọn level/great-wall.png'
 import angkorWatArt from '../assets/Screen 2_ Chọn level/angkor-wat.png'
 import petronasArt from '../assets/Screen 2_ Chọn level/petronas.png'
+import travelSafeBanner from '../assets/Screen 2_ Chọn level/travel-safe-banner.png'
 import introArt from '../assets/Screen 4_ LV1 - Case Brief/Image 20_56_43.png'
 import introSheet from '../assets/Screen 3_ Level 1 - Intro/Image 20_37_07.png'
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
@@ -227,7 +228,9 @@ export function AsiaMap() {
             )
           })}
 
-          <div className="asia__banner">TRAVEL SAFE, SHARE WISELY!</div>
+        </div>
+        <div className="asia__banner">
+          <img src={travelSafeBanner} alt="Travel safe, share wisely!" />
         </div>
       </div>
     </div>

@@ -1476,19 +1476,19 @@ img {
 
 .asia__banner {
   position: absolute;
-  bottom: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0.45rem;
+  left: 1.15rem;
   z-index: 5;
-  background: linear-gradient(180deg, #8b5a2b, #5c3a1e);
-  color: #fff;
-  font-weight: 900;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  padding: 0.5rem 1.5rem;
-  border: 3px solid #2a1808;
-  box-shadow: 0 4px 0 #2a1808;
-  white-space: nowrap;
+  width: clamp(220px, 24vw, 300px);
+  pointer-events: none;
+  filter: drop-shadow(0 5px 2px rgba(0, 0, 0, 0.28));
+}
+
+.asia__banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: auto;
 }
 
 /* ─── Mission intro ─── */
