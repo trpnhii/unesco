@@ -23,7 +23,27 @@ import angkorWatArt from '../assets/Screen 2_ Chọn level/angkor-wat.png'
 import petronasArt from '../assets/Screen 2_ Chọn level/petronas.png'
 import travelSafeBanner from '../assets/Screen 2_ Chọn level/travel-safe-banner.png'
 import introArt from '../assets/Screen 4_ LV1 - Case Brief/Image 20_56_43.png'
-import introSheet from '../assets/Screen 3_ Level 1 - Intro/Image 20_37_07.png'
+import introBackground from '../assets/Screen 3_ Level 1 - Intro/market-background.png'
+import introMissionCard from '../assets/Screen 3_ Level 1 - Intro/mission-card.png'
+import introStartConsole from '../assets/Screen 3_ Level 1 - Intro/start-console.png'
+import introCheckmark from '../assets/Screen 3_ Level 1 - Intro/checkmark.png'
+import introPlant from '../assets/Screen 3_ Level 1 - Intro/plant.png'
+import introCoffee from '../assets/Screen 3_ Level 1 - Intro/coffee.png'
+import introCamera from '../assets/Screen 3_ Level 1 - Intro/camera.png'
+import introPolaroid from '../assets/Screen 3_ Level 1 - Intro/polaroid.png'
+import introMagnifier from '../assets/Screen 3_ Level 1 - Intro/magnifier.png'
+import briefLogo from '../assets/Screen 4_ LV1 - Case Brief/case-logo.png'
+import briefStars from '../assets/Screen 4_ LV1 - Case Brief/brief-stars.png'
+import briefLevel from '../assets/Screen 4_ LV1 - Case Brief/brief-level.png'
+import briefSettings from '../assets/Screen 4_ LV1 - Case Brief/brief-settings.png'
+import briefAsiaBanner from '../assets/Screen 4_ LV1 - Case Brief/asia-adventure-banner.png'
+import briefCaseBanner from '../assets/Screen 4_ LV1 - Case Brief/case-brief-banner.png'
+import briefIntroPanel from '../assets/Screen 4_ LV1 - Case Brief/case-intro-panel.png'
+import briefAccountCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-account.png'
+import briefSourceCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-source.png'
+import briefFeedbackCard from '../assets/Screen 4_ LV1 - Case Brief/mission-card-feedback.png'
+import briefInfoStrip from '../assets/Screen 4_ LV1 - Case Brief/brief-info-strip.png'
+import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-button.png'
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
@@ -241,48 +261,55 @@ export function MissionIntro() {
   const { go } = useGame()
 
   return (
-    <div
-      className="screen mission-intro-screen"
-      style={{ backgroundImage: `url("${introSheet}")` }}
-    >
+    <div className="screen mission-intro-screen">
       <div className="mission-intro-topbar">
-        <button type="button" className="mission-intro-back" onClick={() => go('asia')}>
-          ←
-        </button>
-        <div className="mission-intro-brand">
-          <span>🔍</span>
-          <strong>IS IT REAL?</strong>
-        </div>
-        <div className="mission-intro-status">✓</div>
+        <button
+          type="button"
+          className="mission-intro-back"
+          onClick={() => go('asia')}
+          aria-label="Back to Asia map"
+        />
         <button type="button" className="mission-intro-menu" aria-label="Menu">
           <span />
           <span />
           <span />
         </button>
       </div>
-      <div className="intro">
-        <div className="pixel-box pixel-box--parchment intro__mission">
-          <span className="paperclip">📎</span>
-          <div className="ribbon">MISSION</div>
-          <h2>
-            Is Bến Thành Market <em>UNSAFE</em>?
-          </h2>
-          <p style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--ink-soft)' }}>
-            🔎 Investigate before sharing.
-          </p>
+      <div
+        className="intro"
+        style={{ backgroundImage: `url("${introBackground}")` }}
+      >
+        <div className="intro-composition">
+          <img
+            className="intro__checkmark"
+            src={introCheckmark}
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            className="intro__mission-art"
+            src={introMissionCard}
+            alt="Is Bến Thành Market unsafe? Mission: Investigate before sharing."
+          />
+          <div className="intro-props" aria-hidden="true">
+            <img className="intro-prop intro-prop--camera" src={introCamera} alt="" />
+            <img className="intro-prop intro-prop--polaroid" src={introPolaroid} alt="" />
+            <img className="intro-prop intro-prop--magnifier" src={introMagnifier} alt="" />
+            <img className="intro-prop intro-prop--coffee" src={introCoffee} alt="" />
+            <img className="intro-prop intro-prop--plant" src={introPlant} alt="" />
+          </div>
+          <div className="intro__cta-wrap">
+            <button
+              type="button"
+              className="intro__cta demo-highlight"
+              onClick={() => go('brief')}
+              aria-label="Start now"
+            >
+              <img src={introStartConsole} alt="Start now" />
+            </button>
+          </div>
         </div>
-        <div className="intro-desk" aria-hidden="true">
-          <span>📷</span>
-          <span className="intro-polaroid">🏛️</span>
-          <span>🔎</span>
-          <span>☕</span>
-          <span>🪴</span>
-        </div>
-        <div className="intro__cta-wrap">
-          <button type="button" className="intro__cta demo-highlight" onClick={() => go('brief')}>
-            START NOW
-          </button>
-        </div>
+        <div className="intro-desk" aria-hidden="true" />
       </div>
     </div>
   )
@@ -292,60 +319,62 @@ export function CaseBrief() {
   const { go } = useGame()
 
   return (
-    <div
-      className="screen scene-market scene-asset"
-      style={{ backgroundImage: `url("${introArt}")` }}
-    >
-      <Hud backTo="intro" />
-      <div className="brief">
-        <div className="pixel-box pixel-box--parchment brief__modal">
-          <div className="brief__banners">
-            <div className="ribbon">★ ASIA ADVENTURE ★</div>
-            <div className="brief__location">CHỢ BẾN THÀNH, VIETNAM</div>
-            <div className="ribbon ribbon--gold">★ CASE BRIEF ★</div>
+    <div className="screen case-brief-screen">
+      <div className="brief-topbar">
+        <button
+          type="button"
+          className="mission-intro-back"
+          onClick={() => go('intro')}
+          aria-label="Back to mission intro"
+        />
+        <button type="button" className="mission-intro-menu" aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+      <div
+        className="brief-scene"
+        style={{ backgroundImage: `url("${introArt}")` }}
+      >
+        <div className="brief-composition">
+          <img className="brief-hud-logo" src={briefLogo} alt="Case Check" />
+          <div className="brief-hud-stats" aria-hidden="true">
+            <img src={briefStars} alt="" />
+            <img src={briefLevel} alt="" />
+            <img src={briefSettings} alt="" />
           </div>
-
-          <div className="brief__intro">
-            <span className="cam">📷</span>
-            <p>
-              A viral post claims Bến Thành Market is dangerous. As a digital explorer, your job is
-              to investigate the account, the post content, and public reactions before you hit
-              share.
-            </p>
-          </div>
-
-          <div className="brief__divider">YOUR MISSION</div>
-
-          <div className="mission-cards">
-            <div className="mission-card mission-card--green">
-              <div className="mission-card__icon">🔎</div>
-              <h4>CHECK THE ACCOUNT</h4>
-              <p>Sort red flags, neutral signals, and reliable sources.</p>
-              <div className="xp-tag">+ 100 XP</div>
+          <img
+            className="brief-asia-banner"
+            src={briefAsiaBanner}
+            alt="Asia Adventure — Ben Thanh Market, Vietnam"
+          />
+          <section className="case-brief-panel" aria-label="Case brief">
+            <img className="brief-case-banner" src={briefCaseBanner} alt="Case Brief" />
+            <img
+              className="brief-intro-panel"
+              src={briefIntroPanel}
+              alt="A suspicious social media post about Ben Thanh Market needs investigation."
+            />
+            <div className="brief-mission-title">YOUR MISSION</div>
+            <div className="brief-mission-cards">
+              <img src={briefAccountCard} alt="Step 1: Check the post" />
+              <img src={briefSourceCard} alt="Step 2: Check the source" />
+              <img src={briefFeedbackCard} alt="Step 3: Check feedback" />
             </div>
-            <div className="mission-card mission-card--blue">
-              <div className="mission-card__icon">📄</div>
-              <h4>CHECK THE POST</h4>
-              <p>Spot manipulation, emotion, urgency, and weak evidence.</p>
-              <div className="xp-tag">+ 100 XP</div>
-            </div>
-            <div className="mission-card mission-card--purple">
-              <div className="mission-card__icon">💬</div>
-              <h4>CHECK RESPONSES</h4>
-              <p>Classify comments: first-hand, calm, fear, or rumor.</p>
-              <div className="xp-tag">+ 100 XP</div>
-            </div>
-          </div>
-
-          <Tip>Don&apos;t share early — finishing all three steps keeps your score safe.</Tip>
-
+            <img
+              className="brief-info-strip"
+              src={briefInfoStrip}
+              alt="Complete all three steps to become a Digital Explorer."
+            />
+          </section>
           <button
             type="button"
-            className="btn btn--primary demo-highlight"
-            style={{ marginTop: '1rem', minWidth: 220 }}
+            className="brief-start-button demo-highlight"
             onClick={() => go('step1')}
+            aria-label="Start mission"
           >
-            START MISSION →
+            <img src={briefStartButton} alt="Start mission" />
           </button>
         </div>
       </div>
