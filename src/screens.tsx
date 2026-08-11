@@ -15,18 +15,34 @@ import {
 import { useGame } from './GameContext'
 import worldMapArt from '../assets/Screen 1_ Chọn vùng (location)/Image 20_23_37.png'
 import oceanArt from '../assets/Screen 1_ Chọn vùng (location)/Image 20_59_16.png'
+import benThanhArt from '../assets/Screen 2_ Chọn level/ben-thanh.png'
+import mountFujiArt from '../assets/Screen 2_ Chọn level/mount-fuji.png'
+import tajMahalArt from '../assets/Screen 2_ Chọn level/taj-mahal.png'
+import greatWallArt from '../assets/Screen 2_ Chọn level/great-wall.png'
+import angkorWatArt from '../assets/Screen 2_ Chọn level/angkor-wat.png'
+import petronasArt from '../assets/Screen 2_ Chọn level/petronas.png'
 import introArt from '../assets/Screen 4_ LV1 - Case Brief/Image 20_56_43.png'
+import introSheet from '../assets/Screen 3_ Level 1 - Intro/Image 20_37_07.png'
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
 
 const NODE_POS: Record<number, { x: string; y: string }> = {
-  1: { x: '22%', y: '62%' },
-  2: { x: '78%', y: '28%' },
-  3: { x: '38%', y: '48%' },
-  4: { x: '58%', y: '22%' },
-  5: { x: '48%', y: '72%' },
-  6: { x: '68%', y: '58%' },
+  1: { x: '24%', y: '37%' },
+  2: { x: '50%', y: '32%' },
+  3: { x: '76%', y: '37%' },
+  4: { x: '29%', y: '70%' },
+  5: { x: '52%', y: '73%' },
+  6: { x: '76%', y: '70%' },
+}
+
+const NODE_ART: Record<number, string> = {
+  1: benThanhArt,
+  2: mountFujiArt,
+  3: tajMahalArt,
+  4: greatWallArt,
+  5: angkorWatArt,
+  6: petronasArt,
 }
 
 const TILE_COLORS = [
@@ -122,7 +138,7 @@ export function WorldMap() {
 
 export function AsiaMap() {
   const { go, asiaStars } = useGame()
-  const progress = asiaStars > 0 ? 1 : 0
+  const progress = 1
 
   return (
     <div
@@ -145,55 +161,67 @@ export function AsiaMap() {
             <h3>REWARDS</h3>
             <div className="reward-row">
               <div className="reward-chip">
-                <span>⭐</span>Stars
+                <span>⭐</span>50
               </div>
               <div className="reward-chip">
-                <span>🛡️</span>Badges
+                <span>🛡️</span>1 badge
               </div>
               <div className="reward-chip">
-                <span>🧰</span>Loot
+                <span>🧰</span>At 5 places
               </div>
             </div>
           </div>
-          <Tip>Complete Bến Thành Market first to unlock the next landmark.</Tip>
+          <Tip>Complete a level with 3 stars to unlock the next destination!</Tip>
         </aside>
 
         <div className="asia__map">
-          <div className="asia-island" />
-          <svg className="asia-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-            <path
-              d="M22 62 L38 48 L48 72 L58 22 L68 58 L78 28"
-              fill="none"
-              stroke="rgba(255,255,255,0.85)"
-              strokeWidth="0.8"
-              strokeDasharray="2 2"
-            />
+          <div className="asia-island asia-island--map" />
+          <div className="asia-map-title">
+            <span>🧭</span>
+            <div>
+              <strong>ASIA ADVENTURE</strong>
+              <small>Investigate famous places · unlock new destinations</small>
+            </div>
+          </div>
+
+          <svg
+            className="asia-path asia-path--levels"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <path d="M24 37 C34 24 41 27 50 32 S67 28 76 37" />
+            <path d="M76 37 C84 50 83 60 76 70" />
+            <path d="M76 70 C67 80 61 79 52 73 S38 78 29 70" />
+            <path d="M29 70 C19 58 17 47 24 37" />
           </svg>
 
-          {ASIA_NODES.map((n) => {
-            const pos = NODE_POS[n.id]
-            const done = n.id === 1 && asiaStars > 0
+          {ASIA_NODES.map((node) => {
+            const done = node.id === 1 && asiaStars > 0
             return (
               <button
-                key={n.id}
+                key={node.id}
                 type="button"
-                className={`node${n.locked && !done ? ' is-locked' : ''}`}
-                style={{ left: pos.x, top: pos.y }}
+                className={`node node--level${node.locked && !done ? ' is-locked' : ''}`}
+                style={{ left: NODE_POS[node.id].x, top: NODE_POS[node.id].y }}
                 onClick={() => {
-                  if (!n.locked) go('intro')
+                  if (!node.locked) go('intro')
                 }}
+                aria-label={`${node.name}, ${node.country}`}
               >
-                <div className="node__badge">{n.locked && !done ? '🔒' : n.id}</div>
-                <div className="node__art">{n.emoji}</div>
+                <div className="node__badge">{node.locked && !done ? '🔒' : node.id}</div>
+                <div className="node__art node__art--component">
+                  <img src={NODE_ART[node.id]} alt="" />
+                </div>
                 <div className="node__stars">
-                  {Array.from({ length: n.maxStars }, (_, i) =>
+                  {Array.from({ length: node.maxStars }, (_, i) =>
                     i < (done ? asiaStars : 0) ? '★' : '☆',
                   ).join('')}
                 </div>
                 <div className="node__label">
-                  {n.name}
+                  {node.name}
                   <br />
-                  {n.country}
+                  {node.country}
                 </div>
               </button>
             )
@@ -211,10 +239,24 @@ export function MissionIntro() {
 
   return (
     <div
-      className="screen scene-market scene-asset"
-      style={{ backgroundImage: `url("${introArt}")` }}
+      className="screen mission-intro-screen"
+      style={{ backgroundImage: `url("${introSheet}")` }}
     >
-      <Hud backTo="asia" />
+      <div className="mission-intro-topbar">
+        <button type="button" className="mission-intro-back" onClick={() => go('asia')}>
+          ←
+        </button>
+        <div className="mission-intro-brand">
+          <span>🔍</span>
+          <strong>IS IT REAL?</strong>
+        </div>
+        <div className="mission-intro-status">✓</div>
+        <button type="button" className="mission-intro-menu" aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
       <div className="intro">
         <div className="pixel-box pixel-box--parchment intro__mission">
           <span className="paperclip">📎</span>
@@ -226,8 +268,15 @@ export function MissionIntro() {
             🔎 Investigate before sharing.
           </p>
         </div>
+        <div className="intro-desk" aria-hidden="true">
+          <span>📷</span>
+          <span className="intro-polaroid">🏛️</span>
+          <span>🔎</span>
+          <span>☕</span>
+          <span>🪴</span>
+        </div>
         <div className="intro__cta-wrap">
-          <button type="button" className="intro__cta" onClick={() => go('brief')}>
+          <button type="button" className="intro__cta demo-highlight" onClick={() => go('brief')}>
             START NOW
           </button>
         </div>
@@ -289,7 +338,7 @@ export function CaseBrief() {
 
           <button
             type="button"
-            className="btn btn--primary"
+            className="btn btn--primary demo-highlight"
             style={{ marginTop: '1rem', minWidth: 220 }}
             onClick={() => go('step1')}
           >
@@ -401,7 +450,9 @@ export function Step1Account() {
               return (
                 <div
                   key={key}
-                  className={`bin ${cls}${over === key ? ' is-over' : ''}`}
+                  className={`bin ${cls}${over === key ? ' is-over' : ''}${
+                    dragId ? ' is-demo-target' : ''
+                  }`}
                   onDragOver={(ev) => {
                     ev.preventDefault()
                     setOver(key)
@@ -442,7 +493,7 @@ export function Step1Account() {
               <div
                 key={e.id}
                 className={`tile ${TILE_COLORS[i % TILE_COLORS.length]}${
-                  dragId === e.id ? ' is-selected' : ''
+                  dragId === e.id ? ' is-selected' : i === 0 ? ' demo-highlight-item' : ''
                 }`}
                 draggable
                 onDragStart={() => setDragId(e.id)}
@@ -467,7 +518,7 @@ export function Step1Account() {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            className="btn btn--blue"
+            className={`btn btn--blue${placed === 9 ? ' demo-highlight' : ''}`}
             disabled={placed < 9}
             onClick={() => go('step2')}
           >
@@ -539,7 +590,7 @@ export function Step2Post() {
               <div
                 key={c.id}
                 className={`tile ${TILE_COLORS[i % TILE_COLORS.length]}${
-                  dragId === c.id ? ' is-selected' : ''
+                  dragId === c.id ? ' is-selected' : i === 0 ? ' demo-highlight-item' : ''
                 }`}
                 draggable
                 onDragStart={() => setDragId(c.id)}
@@ -570,7 +621,9 @@ export function Step2Post() {
                     {meta.title}
                   </div>
                   <div
-                    className={`cat-drop${over === cat ? ' is-over' : ''}`}
+                    className={`cat-drop${over === cat ? ' is-over' : ''}${
+                      dragId ? ' is-demo-target' : ''
+                    }`}
                     onDragOver={(ev) => {
                       ev.preventDefault()
                       setOver(cat)
@@ -621,7 +674,7 @@ export function Step2Post() {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            className="btn btn--blue"
+            className={`btn btn--blue${placed === 5 ? ' demo-highlight' : ''}`}
             disabled={placed < 5}
             onClick={() => go('step3')}
           >
@@ -698,7 +751,9 @@ export function Step3Comments() {
             {unplaced.map((c) => (
               <div
                 key={c.id}
-                className={`comment-card${dragId === c.id ? ' is-selected' : ''}`}
+                className={`comment-card${
+                  dragId === c.id ? ' is-selected' : unplaced[0]?.id === c.id ? ' demo-highlight-item' : ''
+                }`}
                 draggable
                 onDragStart={() => setDragId(c.id)}
                 onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
@@ -733,7 +788,9 @@ export function Step3Comments() {
                     {meta.title}
                   </div>
                   <div
-                    className={`cat-drop${over === cat ? ' is-over' : ''}`}
+                    className={`cat-drop${over === cat ? ' is-over' : ''}${
+                      dragId ? ' is-demo-target' : ''
+                    }`}
                     onDragOver={(ev) => {
                       ev.preventDefault()
                       setOver(cat)
@@ -812,7 +869,7 @@ export function Step3Comments() {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            className="btn btn--blue"
+            className={`btn btn--blue${placed === 6 ? ' demo-highlight' : ''}`}
             disabled={placed < 6}
             onClick={() => finish(false)}
           >
@@ -1003,7 +1060,7 @@ export function Results() {
             </button>
             <button
               type="button"
-              className="btn btn--primary"
+              className="btn btn--primary demo-highlight"
               onClick={() => {
                 if (!missionComplete) finalizeMission(false)
                 go('complete')
@@ -1064,7 +1121,11 @@ export function StageComplete() {
             >
               ↻ PLAY AGAIN
             </button>
-            <button type="button" className="btn btn--primary" onClick={() => go('asia')}>
+            <button
+              type="button"
+              className="btn btn--primary demo-highlight"
+              onClick={() => go('asia')}
+            >
               CONTINUE JOURNEY →
             </button>
           </div>

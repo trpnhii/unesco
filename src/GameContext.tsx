@@ -40,12 +40,29 @@ interface GameState {
 
 const GameContext = createContext<GameState | null>(null)
 
+const SCREENS: Screen[] = [
+  'world',
+  'asia',
+  'intro',
+  'brief',
+  'step1',
+  'step2',
+  'step3',
+  'results',
+  'complete',
+]
+
+function initialScreen(): Screen {
+  const requested = new URLSearchParams(window.location.search).get('screen')
+  return SCREENS.includes(requested as Screen) ? (requested as Screen) : 'world'
+}
+
 function emptyMap<T>(ids: string[]): Record<string, T | null> {
   return Object.fromEntries(ids.map((id) => [id, null]))
 }
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  const [screen, setScreen] = useState<Screen>('world')
+  const [screen, setScreen] = useState<Screen>(initialScreen)
   const [stars, setStars] = useState(120)
   const [xp, setXp] = useState(0)
   const [level] = useState(1)
@@ -94,13 +111,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const starsGained = score >= 900 ? 3 : score >= 750 ? 2 : score >= 500 ? 1 : 0
       const xpGain = 100 + starsGained * 50
 
+      if (missionComplete) return { score, grade, starsGained }
+
       setStars((v) => v + 20 + starsGained * 40)
       setXp((v) => Math.min(300, v + xpGain))
       setAsiaStars(starsGained)
       setMissionComplete(true)
       return { score, grade, starsGained }
     },
-    [step1, step2, step3],
+    [step1, step2, step3, missionComplete],
   )
 
   const resetMission = useCallback(() => {
