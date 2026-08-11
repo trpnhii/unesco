@@ -197,8 +197,11 @@ export function PhonePost({
           )}
         </div>
         <div className="phone__caption">
-          <strong>SHOCKING:</strong> Ben Thanh Market closed today! Tourists be careful! Share
-          before it&apos;s too late. #BenThanhMarket #NotSafe
+          <strong>🚨 SỐC: BẾN THÀNH MARKET NGUY HIỂM HƠN BẠN NGHĨ!</strong>
+          <br />
+          Vừa xảy ra cướp giật hàng loạt, du khách nước ngoài hoảng loạn bỏ chạy!
+          <br />
+          👉 Chia sẻ ngay để mọi người CẨN THẬN! #BenThanhMarket #NotSafe
         </div>
         <div className="phone__meta">
           <span>❤️ 1.2K</span>

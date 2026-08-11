@@ -59,11 +59,14 @@ export const EVIDENCE: EvidenceItem[] = [
 ]
 
 export const CLUES: ClueItem[] = [
-  { id: 'c1', text: 'The image has signs of editing (people, objects).', correct: 'manipulation' },
-  { id: 'c2', text: 'Emotional language, provokes fear.', correct: 'emotional' },
-  { id: 'c3', text: 'No official source or verification.', correct: 'no_evidence' },
-  { id: 'c4', text: 'Sensational headline, clickbait.', correct: 'urgency' },
-  { id: 'c5', text: 'No time or location details.', correct: 'source' },
+  { id: 'c1', text: 'Hình ảnh có dấu hiệu lặp lại chi tiết (người, bóng, vật thể).', correct: 'manipulation' },
+  { id: 'c2', text: 'Giật tít gây hoang mang, đánh vào nỗi sợ hãi.', correct: 'urgency' },
+  { id: 'c3', text: 'Không có nguồn tin chính thống hoặc nhân chứng cụ thể.', correct: 'no_evidence' },
+  { id: 'c4', text: 'Ngôn ngữ tiêu cực, cảm tính, kích động.', correct: 'emotional' },
+  { id: 'c5', text: 'Không có thời gian, địa điểm cụ thể rõ ràng.', correct: 'source' },
+  { id: 'c6', text: 'Hình ảnh có thể đã qua chỉnh sửa (Photoshop).', correct: 'manipulation' },
+  { id: 'c7', text: 'Thông tin chưa có minh chứng, không có dẫn chứng.', correct: 'no_evidence' },
+  { id: 'c8', text: 'Kêu gọi chia sẻ để tăng tương tác, câu view.', correct: 'urgency' },
 ]
 
 export const COMMENTS: CommentItem[] = [
@@ -71,48 +74,48 @@ export const COMMENTS: CommentItem[] = [
     id: 'm1',
     user: 'travel.with.me',
     time: '2h',
-    text: 'I was there this morning — super crowded, totally normal for tourists.',
+    text: 'Sáng nay mình vừa ở đó, đông bình thường, không thấy vấn đề gì cả.',
     correct: 'firsthand',
     avatarHue: 160,
   },
   {
     id: 'm2',
     user: 'john.doe.1987',
-    time: '3h',
-    text: 'Where is the evidence? Any news from local police?',
-    correct: 'skeptical',
+    time: '2h',
+    text: 'Tin vịt! Mục đích câu view thôi. Đừng hoảng loạn.',
+    correct: 'counter',
     avatarHue: 210,
   },
   {
     id: 'm3',
-    user: 'hanoi.daily',
-    time: '4h',
-    text: 'Chợ Bến Thành is open as usual. Don\'t spread panic.',
-    correct: 'counter',
-    avatarHue: 35,
-  },
-  {
-    id: 'm4',
-    user: 'scared.tourist',
-    time: '1h',
-    text: 'OMG I\'m cancelling my trip!! So scary!!!',
+    user: 'scary.news.daily',
+    time: '2h',
+    text: 'Bị rồi nè, mất điện thoại ngay trước cổng chợ, bọn móc túi nhiều lắm!!!',
     correct: 'emotional',
     avatarHue: 0,
   },
   {
-    id: 'm5',
-    user: 'friend.of.friend',
-    time: '5h',
-    text: 'My cousin\'s friend said someone got scammed there...',
-    correct: 'hearsay',
+    id: 'm4',
+    user: 'curious_cat',
+    time: '1h',
+    text: 'Có ai có link báo chí chính thống đưa tin không? Mình chưa thấy.',
+    correct: 'skeptical',
     avatarHue: 280,
   },
   {
+    id: 'm5',
+    user: 'hanoi.explorer',
+    time: '1h',
+    text: 'Mình người HN, đi chợ Bến Thành 100 lần rồi, vẫn an toàn nếu cẩn thận.',
+    correct: 'counter',
+    avatarHue: 35,
+  },
+  {
     id: 'm6',
-    user: 'sg.backpacker',
-    time: '6h',
-    text: 'Just left Ben Thanh. Busy but fine — classic market day.',
-    correct: 'firsthand',
+    user: 'true.story.time',
+    time: '58m',
+    text: 'Nghe nói tối qua công an bắt 3 nhóm cướp giật ở khu vực này?',
+    correct: 'hearsay',
     avatarHue: 120,
   },
 ]
@@ -153,12 +156,40 @@ export const CLUE_LABELS: Record<
   },
 }
 
-export const COMMENT_LABELS: Record<CommentCategory, { title: string; icon: string; color: string }> = {
-  firsthand: { title: 'First-hand Experiences', icon: '🛡️', color: 'var(--green)' },
-  skeptical: { title: 'Skeptical / Questioning', icon: '🔍', color: 'var(--blue)' },
-  counter: { title: 'Counter / Calm Voices', icon: '👥', color: 'var(--purple)' },
-  emotional: { title: 'Emotional / Fear Amplifiers', icon: '😰', color: 'var(--gold)' },
-  hearsay: { title: 'Unverified / Hearsay', icon: '❓', color: 'var(--danger)' },
+export const COMMENT_LABELS: Record<
+  CommentCategory,
+  { title: string; icon: string; color: string; description: string }
+> = {
+  firsthand: {
+    title: 'First-hand Experiences',
+    icon: '🛡️',
+    color: 'var(--green)',
+    description: 'People sharing their own direct experience at the location.',
+  },
+  skeptical: {
+    title: 'Skeptical / Questioning',
+    icon: '🔍',
+    color: 'var(--blue)',
+    description: 'People asking for evidence or questioning the claim.',
+  },
+  counter: {
+    title: 'Counter / Calm Voices',
+    icon: '👥',
+    color: 'var(--purple)',
+    description: "People saying it's exaggerated, misleading or trying to calm others.",
+  },
+  emotional: {
+    title: 'Emotional / Fear Amplifiers',
+    icon: '😰',
+    color: 'var(--gold)',
+    description: 'Comments that express fear, anger or panic.',
+  },
+  hearsay: {
+    title: 'Unverified / Hearsay',
+    icon: '❓',
+    color: 'var(--danger)',
+    description: 'Rumors or claims with no evidence or unclear sources.',
+  },
 }
 
 export const ASIA_NODES = [

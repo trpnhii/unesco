@@ -59,12 +59,17 @@ import step2Clue2 from '../assets/Screen 6_ LV1 - Step 2/clue-2.png'
 import step2Clue3 from '../assets/Screen 6_ LV1 - Step 2/clue-3.png'
 import step2Clue4 from '../assets/Screen 6_ LV1 - Step 2/clue-4.png'
 import step2Clue5 from '../assets/Screen 6_ LV1 - Step 2/clue-5.png'
+import step2Clue6 from '../assets/Screen 6_ LV1 - Step 2/clue-6.png'
+import step2Clue7 from '../assets/Screen 6_ LV1 - Step 2/clue-7.png'
 import step2CatManipulation from '../assets/Screen 6_ LV1 - Step 2/cat-manipulation.png'
 import step2CatEmotional from '../assets/Screen 6_ LV1 - Step 2/cat-emotional.png'
 import step2CatEvidence from '../assets/Screen 6_ LV1 - Step 2/cat-evidence.png'
 import step2CatIntent from '../assets/Screen 6_ LV1 - Step 2/cat-intent.png'
 import step2CatOther from '../assets/Screen 6_ LV1 - Step 2/cat-other.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
+import step3Art from '../assets/Screen 7_ LV1 - Step 3/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
+import completeArt from '../assets/Screen 9_ Next level/Image 21_25_43.png'
+import completeKit from '../assets/Screen 9_ Next level/Image 21_28_42.png'
 
 const STEP2_CLUE_ART: Record<string, string> = {
   c1: step2Clue1,
@@ -72,6 +77,8 @@ const STEP2_CLUE_ART: Record<string, string> = {
   c3: step2Clue3,
   c4: step2Clue2,
   c5: step2Clue5,
+  c6: step2Clue6,
+  c7: step2Clue7,
 }
 
 const STEP2_CAT_ART: Record<ClueCategory, string> = {
@@ -633,20 +640,36 @@ export function Step2Post() {
         <div className="step2-clues">
           <div className="step2-panel-title">Clue blocks (drag to categories)</div>
           <div className="clue-stack">
-            {unplaced.map((c, i) => (
-              <button
-                key={c.id}
-                type="button"
-                className={`step2-clue-art${dragId === c.id ? ' is-selected' : ''}${
-                  i === 0 ? ' demo-highlight-item' : ''
-                }`}
-                draggable
-                onDragStart={() => setDragId(c.id)}
-                onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
-              >
-                <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
-              </button>
-            ))}
+            {unplaced.map((c, i) =>
+              STEP2_CLUE_ART[c.id] ? (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`step2-clue-art${dragId === c.id ? ' is-selected' : ''}${
+                    i === 0 ? ' demo-highlight-item' : ''
+                  }`}
+                  draggable
+                  onDragStart={() => setDragId(c.id)}
+                  onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
+                >
+                  <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
+                </button>
+              ) : (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`step2-clue-text step2-clue-text--pink${
+                    dragId === c.id ? ' is-selected' : ''
+                  }${i === 0 ? ' demo-highlight-item' : ''}`}
+                  draggable
+                  onDragStart={() => setDragId(c.id)}
+                  onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
+                >
+                  <span className="step2-clue-text__handle">⠿</span>
+                  <span>{c.text}</span>
+                </button>
+              ),
+            )}
             {unplaced.length === 0 ? (
               <p className="step2-all-done">All clues placed — double-click a clue to move it back.</p>
             ) : null}
@@ -676,22 +699,40 @@ export function Step2Post() {
                 >
                   <img src={STEP2_CAT_ART[cat]} alt={CLUE_LABELS[cat].title} draggable={false} />
                   <div className="step2-cat-art__drop">
-                    {items.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        className="step2-clue-art step2-clue-art--placed"
-                        draggable
-                        onDragStart={() => setDragId(c.id)}
-                        onClick={(ev) => {
-                          ev.stopPropagation()
-                          setDragId(c.id)
-                        }}
-                        onDoubleClick={() => placeClue(c.id, null)}
-                      >
-                        <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
-                      </button>
-                    ))}
+                    {items.map((c) =>
+                      STEP2_CLUE_ART[c.id] ? (
+                        <button
+                          key={c.id}
+                          type="button"
+                          className="step2-clue-art step2-clue-art--placed"
+                          draggable
+                          onDragStart={() => setDragId(c.id)}
+                          onClick={(ev) => {
+                            ev.stopPropagation()
+                            setDragId(c.id)
+                          }}
+                          onDoubleClick={() => placeClue(c.id, null)}
+                        >
+                          <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
+                        </button>
+                      ) : (
+                        <button
+                          key={c.id}
+                          type="button"
+                          className="step2-clue-text step2-clue-text--pink step2-clue-art--placed"
+                          draggable
+                          onDragStart={() => setDragId(c.id)}
+                          onClick={(ev) => {
+                            ev.stopPropagation()
+                            setDragId(c.id)
+                          }}
+                          onDoubleClick={() => placeClue(c.id, null)}
+                        >
+                          <span className="step2-clue-text__handle">⠿</span>
+                          <span>{c.text}</span>
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
               )
@@ -704,13 +745,13 @@ export function Step2Post() {
       <div className="invest__footer step2-footer">
         <div className="step2-bonus-wrap">
           <img className="step2-bonus-img" src={step2Bonus} alt="Progress bonus" />
-          <span className="step2-bonus-score">{scoreStep2()}/5</span>
+          <span className="step2-bonus-score">{scoreStep2()}/{CLUES.length}</span>
         </div>
         <div className="step2-actions">
           <button
             type="button"
-            className={`step2-img-btn${placed === 5 ? ' demo-highlight' : ''}`}
-            disabled={placed < 5}
+            className={`step2-img-btn${placed === CLUES.length ? ' demo-highlight' : ''}`}
+            disabled={placed < CLUES.length}
             onClick={() => go('step3')}
           >
             <img src={step2BtnSave} alt="Save and continue" />
@@ -732,7 +773,7 @@ export function Step2Post() {
 }
 
 export function Step3Comments() {
-  const { go, step3, placeComment, scoreStep3, shareRisk, finalizeMission } = useGame()
+  const { go, step3, placeComment, shareRisk, finalizeMission } = useGame()
   const { dragId, setDragId, over, setOver } = useDrag()
 
   const placed = Object.values(step3).filter(Boolean).length
@@ -755,9 +796,9 @@ export function Step3Comments() {
 
   return (
     <div
-      className="screen invest scene-asset"
+      className="screen invest step3-screen scene-asset"
       style={{
-        backgroundImage: `linear-gradient(rgba(12, 25, 43, .72), rgba(12, 25, 43, .82)), url("${investigationArt}")`,
+        backgroundImage: `linear-gradient(rgba(12, 25, 43, .18), rgba(12, 25, 43, .48)), url("${step3Art}")`,
       }}
     >
       <Hud
@@ -766,64 +807,84 @@ export function Step3Comments() {
         mission="INVESTIGATE BEFORE SHARING"
         step={3}
       />
-      <div className="invest__guide">
-        <div className="avatar">🕵️</div>
-        <div className="invest__guide-body">
-          <strong>STEP 3: CHECK THE RESPONSE</strong>
-          <p>Drag each comment, or select one and click the category that fits best.</p>
+
+      <div className="step3-briefing">
+        <div className="step3-title-card">
+          <span className="step3-title-card__icon">🔎</span>
+          <div>
+            <strong>STEP 3: CHECK THE RESPONSE</strong>
+            <small>Evaluate what others are saying.</small>
+          </div>
         </div>
-        <div className="invest__warn">⚠ Sharing early costs 10 points!</div>
+        <div className="step3-instruction-card">
+          <span className="step3-scout">🕵️</span>
+          <p>
+            Read the comments on this post. What do they reveal about the situation and the
+            reliability of the post? Drag each comment to the correct category.
+          </p>
+        </div>
+        <div className="step3-warn-card">
+          <span>❗</span>
+          <p>If you share before finishing all steps, you will lose points!</p>
+        </div>
       </div>
 
       <div className="invest__body invest__body--step3">
-        <div className="panel" style={{ display: 'grid', placeItems: 'center' }}>
-          <PhonePost image={investigationArt} />
+        <div className="step3-col step3-col--post">
+          <div className="step3-col__head step3-col__head--purple">POST UNDER INVESTIGATION</div>
+          <div className="step3-post-wrap">
+            <PhonePost image={investigationArt} />
+          </div>
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Comments (drag to categories)</div>
-          <div className="comment-stack">
-            {unplaced.map((c) => (
+        <div className="step3-col step3-col--comments">
+          <div className="step3-col__head step3-col__head--blue">COMMENTS (DRAG TO CATEGORIES)</div>
+          <div className="step3-comment-stack">
+            {unplaced.map((c, i) => (
               <div
                 key={c.id}
-                className={`comment-card${
-                  dragId === c.id ? ' is-selected' : unplaced[0]?.id === c.id ? ' demo-highlight-item' : ''
+                className={`step3-comment${
+                  dragId === c.id ? ' is-selected' : i === 0 ? ' demo-highlight-item' : ''
                 }`}
                 draggable
                 onDragStart={() => setDragId(c.id)}
                 onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
               >
-                <div className="av" style={{ background: `hsl(${c.avatarHue} 55% 55%)` }} />
-                <div>
+                <span className="step3-comment__handle">⠿</span>
+                <div className="step3-comment__av" style={{ background: `hsl(${c.avatarHue} 55% 55%)` }}>
+                  {c.user[0].toUpperCase()}
+                </div>
+                <div className="step3-comment__body">
                   <strong>
-                    {c.user} <span className="time">{c.time}</span>
+                    {c.user} <span>{c.time}</span>
                   </strong>
                   <p>{c.text}</p>
                 </div>
               </div>
             ))}
             {unplaced.length === 0 ? (
-              <p style={{ fontWeight: 800, color: 'var(--green-deep)', fontSize: '0.85rem' }}>
-                All comments classified!
-              </p>
+              <p className="step3-all-done">All comments classified!</p>
             ) : null}
           </div>
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Categorize the comments</div>
-          <div className="cat-list">
+        <div className="step3-col step3-col--cats">
+          <div className="step3-col__head step3-col__head--green">CATEGORIZE THE COMMENTS</div>
+          <div className="step3-cat-list">
             {categories.map((cat) => {
               const meta = COMMENT_LABELS[cat]
               const items = COMMENTS.filter((c) => step3[c.id] === cat)
               return (
-                <div key={cat} className="cat-row">
-                  <div className="cat-label" style={{ borderColor: meta.color, color: meta.color }}>
-                    <span>{meta.icon}</span>
-                    {meta.title}
+                <div key={cat} className={`step3-cat-row step3-cat-row--${cat}`}>
+                  <div className="step3-cat-label">
+                    <span className="step3-cat-label__icon">{meta.icon}</span>
+                    <div>
+                      <strong>{meta.title}</strong>
+                      <small>{meta.description}</small>
+                    </div>
                   </div>
                   <div
-                    className={`cat-drop${over === cat ? ' is-over' : ''}${
+                    className={`step3-cat-drop${over === cat ? ' is-over' : ''}${
                       dragId ? ' is-demo-target' : ''
                     }`}
                     onDragOver={(ev) => {
@@ -838,13 +899,12 @@ export function Step3Comments() {
                     onClick={() => onDrop(cat)}
                   >
                     {items.length === 0 ? (
-                      <div className="cat-drop__empty">Drag here</div>
+                      <span className="step3-cat-drop__empty">DRAG HERE</span>
                     ) : (
                       items.map((c) => (
                         <div
                           key={c.id}
-                          className="tile"
-                          style={{ fontSize: '0.62rem', padding: '0.3rem' }}
+                          className="step3-comment step3-comment--placed"
                           draggable
                           onDragStart={() => setDragId(c.id)}
                           onClick={(ev) => {
@@ -853,7 +913,16 @@ export function Step3Comments() {
                           }}
                           onDoubleClick={() => placeComment(c.id, null)}
                         >
-                          @{c.user}
+                          <span className="step3-comment__handle">⠿</span>
+                          <div
+                            className="step3-comment__av"
+                            style={{ background: `hsl(${c.avatarHue} 55% 55%)` }}
+                          >
+                            {c.user[0].toUpperCase()}
+                          </div>
+                          <div className="step3-comment__body">
+                            <strong>@{c.user}</strong>
+                          </div>
                         </div>
                       ))
                     )}
@@ -864,54 +933,46 @@ export function Step3Comments() {
           </div>
         </div>
 
-        <div className="panel">
-          <div className="panel__title">Reference</div>
-          <div
-            style={{
-              borderRadius: 8,
-              overflow: 'hidden',
-              border: '2px solid #2a3444',
-              marginBottom: 12,
-            }}
-          >
+        <div className="step3-col step3-col--ref">
+          <div className="step3-col__head step3-col__head--dark">REFERENCE (COMPARE IF NEEDED)</div>
+          <div className="step3-ref-phone">
             <div
-              style={{
-                height: 100,
-                background: 'linear-gradient(180deg,#57b5ef,#e8c87a)',
-                display: 'grid',
-                placeItems: 'center',
-                fontSize: '2.5rem',
-              }}
-            >
-              🏛️
-            </div>
-            <div style={{ padding: 8, fontSize: '0.7rem', fontWeight: 800, textAlign: 'center' }}>
-              Official view — market open as usual
+              className="step3-ref-phone__screen"
+              style={{ backgroundImage: `url("${investigationArt}")` }}
+            />
+          </div>
+          <div className="step3-tip">
+            <span className="step3-tip__icon">💡</span>
+            <div>
+              <strong>TIP</strong>
+              <p>Bình tĩnh, so sánh nhiều nguồn và chú ý đến những người có trải nghiệm thực tế.</p>
             </div>
           </div>
-          <Tip>Calm first-hand reports often beat viral fear.</Tip>
         </div>
       </div>
 
-      <div className="invest__footer">
-        <div className="bonus">⭐ Classify all for +10 · {scoreStep3()}/6</div>
-        <div className="progress-mini">
-          PROGRESS · {placed}/6
-          <div className="bar">
+      <div className="invest__footer step3-footer">
+        <div className="step2-bonus-wrap">
+          <img className="step2-bonus-img" src={step2Bonus} alt="Progress bonus" />
+        </div>
+        <div className="step3-progress">
+          <strong>PROGRESS</strong>
+          <span>Đã phân loại: {placed}/6</span>
+          <div className="step3-progress__bar">
             <div style={{ width: `${(placed / 6) * 100}%` }} />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="step2-actions">
           <button
             type="button"
-            className={`btn btn--blue${placed === 6 ? ' demo-highlight' : ''}`}
+            className={`step2-img-btn${placed === 6 ? ' demo-highlight' : ''}`}
             disabled={placed < 6}
             onClick={() => finish(false)}
           >
-            💾 SAVE & CONTINUE
+            <img src={step2BtnSave} alt="Save and continue" />
           </button>
-          <button type="button" className="btn btn--danger" onClick={() => finish(true)}>
-            ✈️ SHARE NOW (−10)
+          <button type="button" className="step2-img-btn" onClick={() => finish(true)}>
+            <img src={step2BtnShare} alt="Share now, risk minus 10 points" />
           </button>
         </div>
       </div>
@@ -928,7 +989,7 @@ export function Results() {
     finalizeMission,
     missionComplete,
     resetMission,
-    asiaStars,
+    stars,
   } = useGame()
   const [pills, setPills] = useState<string[]>([])
   const [note, setNote] = useState('')
@@ -936,7 +997,7 @@ export function Results() {
   const s1 = scoreStep1()
   const s2 = scoreStep2()
   const s3 = scoreStep3()
-  let score = Math.round((s1 / 9) * 350 + (s2 / 5) * 350 + (s3 / 6) * 300)
+  let score = Math.round((s1 / 9) * 350 + (s2 / CLUES.length) * 350 + (s3 / 6) * 300)
   score = Math.min(1000, score + (missionComplete ? 20 : 0))
   const grade =
     score >= 900 ? 'A' : score >= 750 ? 'B' : score >= 600 ? 'C' : score >= 400 ? 'D' : 'F'
@@ -950,118 +1011,137 @@ export function Results() {
           : 'TRY AGAIN, SCOUT!'
 
   const reflections = [
-    'Check the account first',
-    'Fear is not evidence',
-    'Verify before sharing',
-    'Seek calm sources',
+    'Think before you share',
+    'Check facts, not feelings',
+    'Calm minds keep communities safe',
   ]
 
   return (
-    <div className="screen">
-      <Hud backTo="step3" caseTitle="IS BẾN THÀNH MARKET UNSAFE?" mission="MISSION REVIEW" />
-      <div
-        className="results scene-asset"
-        style={{
-          backgroundImage: `linear-gradient(rgba(12, 25, 43, .74), rgba(12, 25, 43, .86)), url("${resultArt}")`,
-        }}
-      >
-        <div className="results__banner">
-          <span style={{ fontSize: '2rem' }}>✅</span>
+    <div
+      className="screen results-screen scene-asset"
+      style={{ backgroundImage: `url("${resultArt}")` }}
+    >
+      <Hud backTo="step3" caseTitle="IS BẾN THÀNH MARKET UNSAFE?" mission="INVESTIGATE BEFORE SHARING" />
+
+      <div className="results-v2">
+        <div className="results-v2__banner">
+          <span className="results-v2__banner-icon">✓</span>
           <div>
             <h2>MISSION COMPLETE!</h2>
-            <p>You investigated before spreading the claim. Here&apos;s your debrief.</p>
+            <p>You investigated before sharing. Great job!</p>
           </div>
         </div>
 
-        <div className="results__grid">
-          <div className="score-card">
-            <div style={{ fontSize: '0.7rem', fontWeight: 900, letterSpacing: '0.06em' }}>
-              YOUR GRADE
+        <div className="results-v2__grid">
+          <div className="results-v2__score">
+            <div className="results-v2__score-head">YOUR FINAL SCORE</div>
+            <div className="results-v2__shield">
+              <span className="results-v2__wreath">🌿</span>
+              <div className="results-v2__grade-badge">{grade}</div>
+              <span className="results-v2__wreath">🌿</span>
             </div>
-            <div className="score-card__grade">{grade}</div>
-            <div className="score-card__num">{score} / 1000</div>
-            <div className="score-card__title">{title}</div>
-            <div className="badges">
+            <div className="results-v2__score-num">{score} / 1000</div>
+            <div className="results-v2__ribbon">{title}</div>
+            <p className="results-v2__score-desc">
+              You practiced critical thinking and helped stop misinformation from spreading.
+            </p>
+            <div className="results-v2__badges-head">BADGES EARNED</div>
+            <div className="results-v2__badges">
               {[
                 ['🔎', 'Fact Finder'],
                 ['📎', 'Source Sleuth'],
-                ['💬', 'Comment Critic'],
-                ['🛡️', 'Safe Sharer'],
-                ['⭐', 'Explorer'],
+                ['💬', 'Calm Communicator'],
+                ['🛡️', 'Safety Guardian'],
+                ['⭐', 'Thoughtful Sharer'],
               ].map(([icon, label]) => (
-                <div key={label} className="badge">
+                <div key={label} className="results-v2__badge">
                   <span>{icon}</span>
-                  {label}
+                  <small>{label}</small>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="feedback-panel">
-            <div className="fb-block fb-block--good">
-              <h4>WHAT YOU DID WELL</h4>
+          <div className="results-v2__feedback">
+            <div className="results-v2__fb results-v2__fb--good">
+              <h4>⭐ WHAT YOU DID WELL</h4>
               <ul>
-                {s1 >= 5 ? <li>Spotted account-level red flags</li> : null}
-                {s2 >= 3 ? <li>Caught emotional framing in the post</li> : null}
-                {s3 >= 3 ? <li>Separated first-hand reports from rumor</li> : null}
-                {s1 < 5 && s2 < 3 && s3 < 3 ? (
-                  <li>You started the investigation process</li>
-                ) : null}
+                {s1 >= 5 ? <li>You checked the source carefully.</li> : null}
+                {s2 >= 4 ? <li>You analyzed the image and post for red flags.</li> : null}
+                {s3 >= 3 ? <li>You evaluated comments with a critical eye.</li> : null}
+                <li>You made a calm and responsible decision.</li>
               </ul>
             </div>
-            <div className="fb-block fb-block--miss">
-              <h4>WHAT YOU MISSED</h4>
+            <div className="results-v2__fb results-v2__fb--miss">
+              <h4>⚠ WHAT YOU MISSED</h4>
               <ul>
                 {s1 < 7 ? <li>Some account signals were sorted incorrectly ({s1}/9)</li> : null}
-                {s2 < 4 ? <li>Post clues need sharper categories ({s2}/5)</li> : null}
+                {s2 < 6 ? <li>Post clues need sharper categories ({s2}/{CLUES.length})</li> : null}
                 {s3 < 5 ? <li>A few comments were miscategorized ({s3}/6)</li> : null}
-                {s1 >= 7 && s2 >= 4 && s3 >= 5 ? (
-                  <li>Almost perfect — only tiny details left</li>
+                {s1 >= 7 && s2 >= 6 && s3 >= 5 ? (
+                  <li>You could look for more corroborating evidence from official sources.</li>
                 ) : null}
               </ul>
             </div>
-            <div className="fb-block fb-block--model">
-              <h4>MODEL CALM RESPONSE</h4>
+            <div className="results-v2__fb results-v2__fb--model">
+              <h4>MODEL CALM RESPONSE (EXAMPLE)</h4>
               <blockquote>
-                &ldquo;Before sharing, check who posted this, what evidence they offer, and what
-                calm locals or official pages are saying. Fear travels faster than facts.&rdquo;
+                &ldquo;It&apos;s important to stay calm and verify information before sharing. Based
+                on what we know, the claim that &lsquo;Bến Thành Market is not safe&rsquo; is not
+                supported by reliable evidence. Let&apos;s be careful, keep others safe, and share
+                responsibly.&rdquo;
               </blockquote>
             </div>
           </div>
 
-          <div className="side-stack">
-            <div className="progress-card">
+          <div className="results-v2__side">
+            <div className="results-v2__progress">
               <h4>YOUR PROGRESS</h4>
-              <div className="p-step">
-                <span className="p-step__n">1</span> Check the Account
-              </div>
-              <div className="p-step">
-                <span className="p-step__n">2</span> Check the Post
-              </div>
-              <div className="p-step">
-                <span className="p-step__n">3</span> Check Responses
+              {[
+                ['1', 'Check the Account'],
+                ['2', 'Check the Post'],
+                ['3', 'Check the Comments'],
+              ].map(([n, label]) => (
+                <div key={n} className="results-v2__pstep">
+                  <span>{n}</span>
+                  <div>
+                    {label}
+                    <small>Completed</small>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="results-v2__wisdom">
+              <h4>💡 DIGITAL WISDOM TIP</h4>
+              <p>
+                Thông tin thật sự sẽ không sợ kiểm chứng. Hãy là người lan tỏa sự thật, không phải
+                tin đồn.
+              </p>
+              <div className="results-v2__wisdom-art" aria-hidden="true">
+                🏛️
               </div>
             </div>
-            <Tip>Travel safe, share wisely — one pause can stop a rumor.</Tip>
           </div>
         </div>
 
-        <div className="results__bottom">
-          <div className="rewards-box">
-            REWARDS
-            <br />
-            ⭐ +{20 + (asiaStars || 1) * 40}
-            <br />
-            🪙 +20
+        <div className="results-v2__bottom">
+          <div className="results-v2__rewards">
+            <strong>YOUR REWARDS</strong>
+            <div>
+              <span>⭐ +{stars >= 120 ? stars - 100 : 20}</span>
+              <span>🪙 +20 coins</span>
+            </div>
+            <small>Keep going! The more you practice, the stronger your digital wisdom becomes.</small>
           </div>
-          <div className="reflect">
-            <h4>REFLECTION</h4>
-            <div className="reflect__pills">
+
+          <div className="results-v2__reflect">
+            <strong>What did you learn today?</strong>
+            <div className="results-v2__pills">
               {reflections.map((r) => (
                 <button
                   key={r}
                   type="button"
-                  className={`pill${pills.includes(r) ? ' is-on' : ''}`}
+                  className={`results-v2__pill${pills.includes(r) ? ' is-on' : ''}`}
                   onClick={() =>
                     setPills((prev) =>
                       prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r],
@@ -1072,20 +1152,23 @@ export function Results() {
                 </button>
               ))}
             </div>
-            <input
-              value={note}
-              onChange={(e) => setNote(e.target.value.slice(0, 120))}
-              placeholder="Write your takeaway…"
-              maxLength={120}
-            />
-            <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#888', marginTop: 4 }}>
-              {note.length}/120
-            </div>
+            <label>
+              One thing I will do differently next time:
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value.slice(0, 120))}
+                placeholder="Write your takeaway…"
+                maxLength={120}
+                rows={2}
+              />
+            </label>
+            <span className="results-v2__counter">{note.length}/120</span>
           </div>
-          <div className="results-actions">
+
+          <div className="results-v2__actions">
             <button
               type="button"
-              className="btn btn--wood"
+              className="results-v2__btn results-v2__btn--blue"
               onClick={() => {
                 resetMission()
                 go('intro')
@@ -1095,7 +1178,7 @@ export function Results() {
             </button>
             <button
               type="button"
-              className="btn btn--primary demo-highlight"
+              className="results-v2__btn results-v2__btn--gold demo-highlight"
               onClick={() => {
                 if (!missionComplete) finalizeMission(false)
                 go('complete')
@@ -1111,83 +1194,204 @@ export function Results() {
 }
 
 export function StageComplete() {
-  const { go, scoreStep1, scoreStep2, scoreStep3, asiaStars, resetMission } = useGame()
+  const { go, scoreStep1, scoreStep2, scoreStep3, stars, xp, level, resetMission } = useGame()
   const s1 = scoreStep1()
   const s2 = scoreStep2()
   const s3 = scoreStep3()
+  const accuracy = Math.round(((s1 / 9 + s2 / CLUES.length + s3 / 6) / 3) * 100)
+  const infoScore = Math.round(((s1 / 9 + s2 / CLUES.length) / 2) * 10)
+  const feedbackScore = Math.round((s3 / 6) * 10)
 
   return (
     <div
-      className="screen scene-market scene-asset"
-      style={{ backgroundImage: `url("${resultArt}")` }}
+      className="screen complete-screen scene-asset"
+      style={{ backgroundImage: `url("${completeArt}")` }}
     >
-      <Hud backTo="results" />
-      <div className="complete">
-        <div className="pixel-box pixel-box--parchment complete__panel">
-          <div className="ribbon">★ STAGE CLEAR ★</div>
-          <h2>STAGE 1 COMPLETE!</h2>
-          <div className="ribbon ribbon--green">EXCELLENT!</div>
-          <div className="big-star">⭐</div>
-          <div style={{ fontWeight: 900, color: 'var(--gold-deep)', marginBottom: '0.5rem' }}>
-            + 100 XP
+      <header className="complete-hud">
+        <div className="complete-hud__brand">
+          <span className="complete-hud__logo-icon" aria-hidden="true">
+            🔍
+          </span>
+          <div>
+            <strong>IS IT REAL?</strong>
+            <small>TRAVEL SAFE, SHARE WISELY</small>
           </div>
-          <div className="stat-trio">
-            <div className="stat-box stat-box--green">
-              <span>Correct info</span>
-              <strong>{s1}/9</strong>
+        </div>
+
+        <div className="complete-hud__center">
+          <div className="complete-hud__banner">
+            <span>★</span> ASIA ADVENTURE <span>★</span>
+          </div>
+          <div className="complete-hud__location">◆ CHỢ BẾN THÀNH, VIETNAM ◆</div>
+        </div>
+
+        <div className="complete-hud__stats">
+          <div className="complete-hud__stars">
+            <span aria-hidden="true">⭐</span> {stars}
+          </div>
+          <div className="complete-hud__xp">
+            <span className="complete-hud__lvl">LVL {level}</span>
+            <div className="complete-hud__xp-bar">
+              <div style={{ width: `${Math.min(100, (xp / 300) * 100)}%` }} />
             </div>
-            <div className="stat-box stat-box--blue">
-              <span>Accuracy</span>
-              <strong>{Math.round(((s1 / 9 + s2 / 5 + s3 / 6) / 3) * 100)}%</strong>
-            </div>
-            <div className="stat-box stat-box--purple">
-              <span>Feedback</span>
-              <strong>{s3}/6</strong>
+            <small>
+              {xp} / 300 XP
+            </small>
+          </div>
+          <button type="button" className="complete-hud__gear" aria-label="Settings">
+            ⚙
+          </button>
+          <button type="button" className="complete-hud__menu" aria-label="Menu">
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+
+      <div className="complete-v2">
+        <section className="complete-v2__panel complete-v2__panel--results" aria-label="Kết quả màn 1">
+          <div className="complete-v2__confetti" aria-hidden="true">
+            {Array.from({ length: 18 }, (_, i) => (
+              <i key={i} className={`complete-v2__dot complete-v2__dot--${i % 5}`} />
+            ))}
+          </div>
+
+          <h2>
+            <span aria-hidden="true">★</span> MÀN 1 HOÀN THÀNH!{' '}
+            <span aria-hidden="true">★</span>
+          </h2>
+          <div className="complete-v2__ribbon">
+            <span>TUYỆT VỜI!</span>
+          </div>
+          <p className="complete-v2__msg">
+            Bạn đã hoàn thành xuất sắc nhiệm vụ và trở thành Digital Explorer!
+          </p>
+
+          <div className="complete-v2__star-wrap">
+            <div className="complete-v2__star-glow" aria-hidden="true" />
+            <div className="complete-v2__star" aria-hidden="true">
+              ★
             </div>
           </div>
-          <div className="complete__actions">
+          <div className="complete-v2__xp">+ 100 XP</div>
+
+          <div className="complete-v2__stats-title">
+            <span>◆</span> KẾT QUẢ <span>◆</span>
+          </div>
+          <div className="complete-v2__stats">
+            <div className="complete-v2__stat complete-v2__stat--green">
+              <small>THÔNG TIN ĐÚNG</small>
+              <span className="complete-v2__stat-icon" aria-hidden="true">
+                🔎
+              </span>
+              <strong>
+                {infoScore} / 10
+              </strong>
+            </div>
+            <div className="complete-v2__stat complete-v2__stat--blue">
+              <small>ĐỘ CHÍNH XÁC</small>
+              <span className="complete-v2__stat-icon" aria-hidden="true">
+                📋
+              </span>
+              <strong>{accuracy}%</strong>
+            </div>
+            <div className="complete-v2__stat complete-v2__stat--purple">
+              <small>PHẢN HỒI</small>
+              <span className="complete-v2__stat-icon" aria-hidden="true">
+                💬
+              </span>
+              <strong>
+                {feedbackScore} / 10
+              </strong>
+            </div>
+          </div>
+
+          <div className="complete-v2__actions">
             <button
               type="button"
-              className="btn btn--wood"
+              className="complete-v2__btn complete-v2__btn--replay"
               onClick={() => {
                 resetMission()
                 go('intro')
               }}
             >
-              ↻ PLAY AGAIN
+              <span aria-hidden="true">↻</span> CHƠI LẠI
             </button>
             <button
               type="button"
-              className="btn btn--primary demo-highlight"
+              className="complete-v2__btn complete-v2__btn--continue demo-highlight"
               onClick={() => go('asia')}
             >
-              CONTINUE JOURNEY →
+              TIẾP TỤC HÀNH TRÌNH <span aria-hidden="true">→</span>
             </button>
           </div>
-        </div>
+        </section>
 
-        <div className="pixel-box pixel-box--parchment complete__panel">
-          <div className="ribbon">ASIA JOURNEY</div>
-          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: '1rem' }}>Your path</h2>
-          <div className="journey-path">
-            <div className="journey-stop is-done">
-              <div className="journey-stop__num">✓</div>
-              <div className="journey-stop__card">
-                🏛️ Bến Thành Market — Vietnam
-                {asiaStars > 0 ? ` · ${'★'.repeat(asiaStars)}` : ''}
+        <section
+          className="complete-v2__panel complete-v2__panel--journey"
+          aria-label="Hành trình Châu Á"
+          style={{ ['--kit' as string]: `url("${completeKit}")` }}
+        >
+          <div className="complete-v2__journey-head">
+            <span>HÀNH TRÌNH CHÂU Á</span>
+          </div>
+
+          <div className="complete-v2__path">
+            <div className="complete-v2__stop is-done">
+              <div className="complete-v2__stop-num">1</div>
+              <div className="complete-v2__stop-card">
+                <img src={benThanhArt} alt="" className="complete-v2__stop-thumb" />
+                <div>
+                  <strong>CHỢ BẾN THÀNH</strong>
+                  <small>VIETNAM</small>
+                </div>
+                <span className="complete-v2__flag" aria-hidden="true">
+                  🇻🇳
+                </span>
               </div>
+              <span className="complete-v2__check" aria-hidden="true">
+                ✓
+              </span>
             </div>
+
             {[2, 3, 4, 5].map((n, i) => (
-              <div key={n} className={`journey-stop${i === 0 ? ' is-next' : ' is-locked'}`}>
-                <div className="journey-stop__num">{i === 0 ? n : '🔒'}</div>
-                <div className="journey-stop__card">
-                  {i === 0 ? 'COMING SOON — next landmark' : 'LOCKED'}
+              <div
+                key={n}
+                className={`complete-v2__stop${i === 0 ? ' is-next' : ' is-locked'}`}
+              >
+                <div className="complete-v2__stop-num">{n}</div>
+                <div className="complete-v2__stop-card">
+                  <span className="complete-v2__lock" aria-hidden="true">
+                    🔒
+                  </span>
+                  <div>
+                    <strong>COMING SOON</strong>
+                    <small>???</small>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </div>
+
+      <aside className="complete-sign complete-sign--left" aria-hidden="true">
+        <div className="complete-sign__board">
+          WELL DONE
+          <br />
+          DIGITAL EXPLORER!
+          <span>♥</span>
+        </div>
+      </aside>
+      <aside className="complete-sign complete-sign--right" aria-hidden="true">
+        <div className="complete-sign__board">
+          TRAVEL SAFE,
+          <br />
+          SHARE WISELY
+          <span>♥</span>
+        </div>
+      </aside>
     </div>
   )
 }

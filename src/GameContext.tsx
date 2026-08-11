@@ -103,7 +103,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const s1 = EVIDENCE.filter((e) => step1[e.id] === e.correct).length
       const s2 = CLUES.filter((c) => step2[c.id] === c.correct).length
       const s3 = COMMENTS.filter((c) => step3[c.id] === c.correct).length
-      let score = Math.round(((s1 / 9) * 350 + (s2 / 5) * 350 + (s3 / 6) * 300))
+      let score = Math.round(((s1 / 9) * 350 + (s2 / CLUES.length) * 350 + (s3 / 6) * 300))
       if (sharedEarly) score = Math.max(0, score - 100)
       score = Math.min(1000, score + 20)
 
