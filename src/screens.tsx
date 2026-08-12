@@ -50,8 +50,6 @@ import step2Bonus from '../assets/Screen 6_ LV1 - Step 2/step2-bonus.png'
 import step2BtnSave from '../assets/Screen 6_ LV1 - Step 2/btn-save.png'
 import step2BtnShare from '../assets/Screen 6_ LV1 - Step 2/btn-share.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
-import resultsScout from '../assets/Screen 8_ LV1 - End/results-scout.png'
-import resultsClipboard from '../assets/Screen 8_ LV1 - End/results-clipboard.png'
 import resultsTip from '../assets/Screen 8_ LV1 - End/results-tip.png'
 import step3Art from '../assets/Screen 7_ LV1 - Step 3/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import completeArt from '../assets/Screen 9_ Next level/Image 21_25_43.png'
@@ -1069,7 +1067,9 @@ export function Results() {
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-                <img className="results-v2__scout" src={resultsScout} alt="" />
+                <span className="results-v2__fb-deco" aria-hidden="true">
+                  🕵️
+                </span>
               </div>
             </div>
 
@@ -1085,7 +1085,9 @@ export function Results() {
                     <li>Great work — keep verifying with official sources next time.</li>
                   )}
                 </ul>
-                <img className="results-v2__clip" src={resultsClipboard} alt="" />
+                <span className="results-v2__fb-deco" aria-hidden="true">
+                  📋
+                </span>
               </div>
             </div>
 
@@ -1093,17 +1095,19 @@ export function Results() {
               <div className="results-v2__fb-head results-v2__fb-head--model">
                 MODEL CALM RESPONSE (EXAMPLE)
               </div>
-              <blockquote>
-                <span className="results-v2__quote" aria-hidden="true">
-                  “
-                </span>
-                It&apos;s important to stay calm and verify information before sharing. Based on what
-                we know, the claim that &ldquo;Bến Thành Market is not safe&rdquo; is not supported by
-                reliable evidence. Let&apos;s be careful, keep others safe, and share responsibly.
-                <span className="results-v2__quote results-v2__quote--end" aria-hidden="true">
-                  ”
-                </span>
-              </blockquote>
+              <div className="results-v2__fb-body results-v2__fb-body--model">
+                <blockquote>
+                  <span className="results-v2__quote" aria-hidden="true">
+                    “
+                  </span>
+                  It&apos;s important to stay calm and verify information before sharing. Based on what
+                  we know, the claim that &ldquo;Bến Thành Market is not safe&rdquo; is not supported by
+                  reliable evidence. Let&apos;s be careful, keep others safe, and share responsibly.
+                  <span className="results-v2__quote results-v2__quote--end" aria-hidden="true">
+                    ”
+                  </span>
+                </blockquote>
+              </div>
             </div>
           </section>
 
