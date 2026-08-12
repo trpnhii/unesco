@@ -46,48 +46,13 @@ import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-b
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import step1SourceCard from '../assets/Screen 5_ LV1 - Step 1/source-account-card.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
-import step2Title from '../assets/Screen 6_ LV1 - Step 2/step2-title.png'
-import step2Instruction from '../assets/Screen 6_ LV1 - Step 2/step2-instruction.png'
-import step2Warn from '../assets/Screen 6_ LV1 - Step 2/step2-warn.png'
-import step2Phone from '../assets/Screen 6_ LV1 - Step 2/step2-phone.png'
-import step2Tip from '../assets/Screen 6_ LV1 - Step 2/step2-tip.png'
 import step2Bonus from '../assets/Screen 6_ LV1 - Step 2/step2-bonus.png'
 import step2BtnSave from '../assets/Screen 6_ LV1 - Step 2/btn-save.png'
 import step2BtnShare from '../assets/Screen 6_ LV1 - Step 2/btn-share.png'
-import step2Clue1 from '../assets/Screen 6_ LV1 - Step 2/clue-1.png'
-import step2Clue2 from '../assets/Screen 6_ LV1 - Step 2/clue-2.png'
-import step2Clue3 from '../assets/Screen 6_ LV1 - Step 2/clue-3.png'
-import step2Clue4 from '../assets/Screen 6_ LV1 - Step 2/clue-4.png'
-import step2Clue5 from '../assets/Screen 6_ LV1 - Step 2/clue-5.png'
-import step2Clue6 from '../assets/Screen 6_ LV1 - Step 2/clue-6.png'
-import step2Clue7 from '../assets/Screen 6_ LV1 - Step 2/clue-7.png'
-import step2CatManipulation from '../assets/Screen 6_ LV1 - Step 2/cat-manipulation.png'
-import step2CatEmotional from '../assets/Screen 6_ LV1 - Step 2/cat-emotional.png'
-import step2CatEvidence from '../assets/Screen 6_ LV1 - Step 2/cat-evidence.png'
-import step2CatIntent from '../assets/Screen 6_ LV1 - Step 2/cat-intent.png'
-import step2CatOther from '../assets/Screen 6_ LV1 - Step 2/cat-other.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
 import step3Art from '../assets/Screen 7_ LV1 - Step 3/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import completeArt from '../assets/Screen 9_ Next level/Image 21_25_43.png'
 import completeKit from '../assets/Screen 9_ Next level/Image 21_28_42.png'
-
-const STEP2_CLUE_ART: Record<string, string> = {
-  c1: step2Clue1,
-  c2: step2Clue4,
-  c3: step2Clue3,
-  c4: step2Clue2,
-  c5: step2Clue5,
-  c6: step2Clue6,
-  c7: step2Clue7,
-}
-
-const STEP2_CAT_ART: Record<ClueCategory, string> = {
-  manipulation: step2CatManipulation,
-  emotional: step2CatEmotional,
-  no_evidence: step2CatEvidence,
-  urgency: step2CatIntent,
-  source: step2CatOther,
-}
 
 const NODE_POS: Record<number, { x: string; y: string }> = {
   1: { x: '24%', y: '37%' },
@@ -595,6 +560,7 @@ export function Step2Post() {
   const placed = Object.values(step2).filter(Boolean).length
   const unplaced = CLUES.filter((c) => !step2[c.id])
   const categories = Object.keys(CLUE_LABELS) as ClueCategory[]
+  const total = CLUES.length
 
   function onDrop(cat: ClueCategory) {
     if (dragId) {
@@ -619,92 +585,94 @@ export function Step2Post() {
       />
 
       <div className="step2-briefing">
-        <img className="step2-title-img" src={step2Title} alt="Step 2: Check the post" />
-        <img
-          className="step2-instruction-img"
-          src={step2Instruction}
-          alt="Read the caption and clues inside the post. Drag each clue to the correct category."
-        />
-        <img
-          className="step2-warn-img"
-          src={step2Warn}
-          alt="If you share before finishing all steps, you will lose points!"
-        />
+        <div className="step2-title-card">
+          <span className="step2-title-card__icon">🔎</span>
+          <div>
+            <strong>STEP 2: CHECK THE POST</strong>
+            <small>Analyze the content carefully.</small>
+          </div>
+        </div>
+        <div className="step2-instruction-card">
+          <span className="step2-scout">🕵️</span>
+          <p>
+            Read the caption and clues inside the post. Identify what makes this post potentially
+            misleading. Drag each clue to the correct category.
+          </p>
+        </div>
+        <div className="step2-warn-card">
+          <span>❗</span>
+          <p>If you share before finishing all steps, you will lose points!</p>
+        </div>
       </div>
 
       <div className="invest__body invest__body--step2">
-        <div className="step2-phone-wrap">
-          <img className="step2-phone-img" src={step2Phone} alt="Social post preview" />
+        <div className="step2-col step2-col--post">
+          <div className="step2-col__head step2-col__head--purple">POST UNDER INVESTIGATION</div>
+          <div className="step2-post-wrap">
+            <PhonePost placeholder />
+          </div>
         </div>
 
-        <div className="step2-clues">
-          <div className="step2-panel-title">Clue blocks (drag to categories)</div>
-          <div className="clue-stack">
-            {unplaced.map((c, i) =>
-              STEP2_CLUE_ART[c.id] ? (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={`step2-clue-art${dragId === c.id ? ' is-selected' : ''}${
-                    i === 0 ? ' demo-highlight-item' : ''
-                  }`}
-                  draggable
-                  onDragStart={() => setDragId(c.id)}
-                  onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
-                >
-                  <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
-                </button>
-              ) : (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={`step2-clue-text step2-clue-text--pink${
-                    dragId === c.id ? ' is-selected' : ''
-                  }${i === 0 ? ' demo-highlight-item' : ''}`}
-                  draggable
-                  onDragStart={() => setDragId(c.id)}
-                  onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
-                >
-                  <span className="step2-clue-text__handle">⠿</span>
-                  <span>{c.text}</span>
-                </button>
-              ),
-            )}
+        <div className="step2-col step2-col--clues">
+          <div className="step2-col__head step2-col__head--blue">CLUE BLOCKS (DRAG TO CATEGORIES)</div>
+          <div className="step2-clue-stack">
+            {unplaced.map((c, i) => (
+              <div
+                key={c.id}
+                className={`step2-clue ${TILE_COLORS[i % TILE_COLORS.length]}${
+                  dragId === c.id ? ' is-selected' : i === 0 ? ' demo-highlight-item' : ''
+                }`}
+                draggable
+                onDragStart={() => setDragId(c.id)}
+                onClick={() => setDragId((current) => (current === c.id ? null : c.id))}
+              >
+                <span className="step2-clue__handle">⠿</span>
+                <span className="step2-clue__text">{c.text}</span>
+              </div>
+            ))}
             {unplaced.length === 0 ? (
               <p className="step2-all-done">All clues placed — double-click a clue to move it back.</p>
             ) : null}
           </div>
         </div>
 
-        <div className="step2-categories">
-          <div className="cat-list">
+        <div className="step2-col step2-col--cats">
+          <div className="step2-col__head step2-col__head--green">CATEGORIES (DROP ZONES)</div>
+          <div className="step2-cat-list">
             {categories.map((cat) => {
+              const meta = CLUE_LABELS[cat]
               const items = CLUES.filter((c) => step2[c.id] === cat)
               return (
-                <div
-                  key={cat}
-                  className={`step2-cat-art${over === cat ? ' is-over' : ''}${
-                    dragId ? ' is-demo-target' : ''
-                  }`}
-                  onDragOver={(ev) => {
-                    ev.preventDefault()
-                    setOver(cat)
-                  }}
-                  onDragLeave={() => setOver(null)}
-                  onDrop={(ev) => {
-                    ev.preventDefault()
-                    onDrop(cat)
-                  }}
-                  onClick={() => onDrop(cat)}
-                >
-                  <img src={STEP2_CAT_ART[cat]} alt={CLUE_LABELS[cat].title} draggable={false} />
-                  <div className="step2-cat-art__drop">
-                    {items.map((c) =>
-                      STEP2_CLUE_ART[c.id] ? (
-                        <button
+                <div key={cat} className={`step2-cat-row ${meta.tone}`}>
+                  <div className="step2-cat-label">
+                    <span className="step2-cat-label__icon">{meta.icon}</span>
+                    <div>
+                      <strong>{meta.title}</strong>
+                      <small>{meta.description}</small>
+                    </div>
+                  </div>
+                  <div
+                    className={`step2-cat-drop${over === cat ? ' is-over' : ''}${
+                      dragId ? ' is-demo-target' : ''
+                    }`}
+                    onDragOver={(ev) => {
+                      ev.preventDefault()
+                      setOver(cat)
+                    }}
+                    onDragLeave={() => setOver(null)}
+                    onDrop={(ev) => {
+                      ev.preventDefault()
+                      onDrop(cat)
+                    }}
+                    onClick={() => onDrop(cat)}
+                  >
+                    {items.length === 0 ? (
+                      <span className="step2-cat-drop__empty">DRAG HERE</span>
+                    ) : (
+                      items.map((c) => (
+                        <div
                           key={c.id}
-                          type="button"
-                          className="step2-clue-art step2-clue-art--placed"
+                          className="step2-clue step2-clue--placed"
                           draggable
                           onDragStart={() => setDragId(c.id)}
                           onClick={(ev) => {
@@ -713,58 +681,54 @@ export function Step2Post() {
                           }}
                           onDoubleClick={() => placeClue(c.id, null)}
                         >
-                          <img src={STEP2_CLUE_ART[c.id]} alt={c.text} draggable={false} />
-                        </button>
-                      ) : (
-                        <button
-                          key={c.id}
-                          type="button"
-                          className="step2-clue-text step2-clue-text--pink step2-clue-art--placed"
-                          draggable
-                          onDragStart={() => setDragId(c.id)}
-                          onClick={(ev) => {
-                            ev.stopPropagation()
-                            setDragId(c.id)
-                          }}
-                          onDoubleClick={() => placeClue(c.id, null)}
-                        >
-                          <span className="step2-clue-text__handle">⠿</span>
-                          <span>{c.text}</span>
-                        </button>
-                      ),
+                          <span className="step2-clue__handle">⠿</span>
+                          <span className="step2-clue__text">{c.text}</span>
+                        </div>
+                      ))
                     )}
                   </div>
                 </div>
               )
             })}
           </div>
-          <img className="step2-tip-img" src={step2Tip} alt="Tip: take time to think and check the facts before sharing" />
+          <div className="step2-tip">
+            <span>💡</span>
+            <div>
+              <strong>TIP</strong>
+              <p>Hãy phân tích kỹ từng chi tiết nhỏ trong bài đăng trước khi chia sẻ!</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="invest__footer step2-footer">
-        <div className="step2-bonus-wrap">
-          <img className="step2-bonus-img" src={step2Bonus} alt="Progress bonus" />
-          <span className="step2-bonus-score">{scoreStep2()}/{CLUES.length}</span>
+        <div className="bonus">
+          ⭐ Progress bonus · classify all correctly for +10 · {scoreStep2()}/{total}
+        </div>
+        <div className="progress-mini">
+          PROGRESS · {placed}/{total}
+          <div className="bar">
+            <div style={{ width: `${(placed / total) * 100}%` }} />
+          </div>
         </div>
         <div className="step2-actions">
           <button
             type="button"
-            className={`step2-img-btn${placed === CLUES.length ? ' demo-highlight' : ''}`}
-            disabled={placed < CLUES.length}
+            className={`btn btn--blue${placed === total ? ' demo-highlight' : ''}`}
+            disabled={placed < total}
             onClick={() => go('step3')}
           >
-            <img src={step2BtnSave} alt="Save and continue" />
+            💾 SAVE & CONTINUE
           </button>
           <button
             type="button"
-            className="step2-img-btn"
+            className="btn btn--danger"
             onClick={() => {
               shareRisk()
               go('results')
             }}
           >
-            <img src={step2BtnShare} alt="Share now, risk minus 10 points" />
+            ✈️ SHARE NOW (−10)
           </button>
         </div>
       </div>
