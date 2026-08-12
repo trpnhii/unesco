@@ -10,7 +10,7 @@ export function IconButton({
   title,
 }: {
   onClick?: () => void
-  children: ReactNode
+  children?: ReactNode
   gold?: boolean
   back?: boolean
   title?: string
@@ -18,12 +18,16 @@ export function IconButton({
   return (
     <button
       type="button"
-      className={`icon-btn${gold ? ' icon-btn--gold' : ''}${back ? ' icon-btn--back' : ''}`}
+      className={
+        back
+          ? 'mission-intro-back'
+          : `icon-btn${gold ? ' icon-btn--gold' : ''}`
+      }
       onClick={onClick}
       title={title}
       aria-label={title}
     >
-      {children}
+      {back ? null : children}
     </button>
   )
 }
@@ -45,9 +49,7 @@ export function Hud({
     <header className="hud">
       <div className="hud__left">
         {backTo ? (
-          <IconButton onClick={() => go(backTo)} title="Back" gold back>
-            ←
-          </IconButton>
+          <IconButton onClick={() => go(backTo)} title="Back" back />
         ) : null}
 
         {caseTitle ? (
