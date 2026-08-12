@@ -50,6 +50,9 @@ import step2Bonus from '../assets/Screen 6_ LV1 - Step 2/step2-bonus.png'
 import step2BtnSave from '../assets/Screen 6_ LV1 - Step 2/btn-save.png'
 import step2BtnShare from '../assets/Screen 6_ LV1 - Step 2/btn-share.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
+import resultsScout from '../assets/Screen 8_ LV1 - End/results-scout.png'
+import resultsClipboard from '../assets/Screen 8_ LV1 - End/results-clipboard.png'
+import resultsTip from '../assets/Screen 8_ LV1 - End/results-tip.png'
 import step3Art from '../assets/Screen 7_ LV1 - Step 3/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
 import completeArt from '../assets/Screen 9_ Next level/Image 21_25_43.png'
 import completeKit from '../assets/Screen 9_ Next level/Image 21_28_42.png'
@@ -953,7 +956,6 @@ export function Results() {
     finalizeMission,
     missionComplete,
     resetMission,
-    stars,
   } = useGame()
   const [pills, setPills] = useState<string[]>([])
   const [note, setNote] = useState('')
@@ -973,12 +975,36 @@ export function Results() {
         : grade === 'C'
           ? 'KEEP DIGGING!'
           : 'TRY AGAIN, SCOUT!'
+  const rewardStars = grade === 'A' ? 120 : grade === 'B' ? 80 : grade === 'C' ? 50 : 20
+  const didWell = [
+    s1 >= 5 ? 'You checked the source carefully.' : null,
+    s2 >= 4 ? 'You analyzed the image and post for red flags.' : null,
+    s3 >= 3 ? 'You evaluated comments with a critical eye.' : null,
+    'You made a calm and responsible decision.',
+  ].filter(Boolean) as string[]
+  const missed = [
+    s1 < 7 ? `Some account signals were sorted incorrectly (${s1}/9).` : null,
+    s2 < Math.ceil(CLUES.length * 0.75)
+      ? `Post clues need sharper categories (${s2}/${CLUES.length}).`
+      : null,
+    s3 < 5 ? `A few comments were miscategorized (${s3}/6).` : null,
+    s1 >= 7 && s2 >= Math.ceil(CLUES.length * 0.75) && s3 >= 5
+      ? 'You could have looked for more corroborating evidence from official sources.'
+      : null,
+  ].filter(Boolean) as string[]
 
   const reflections = [
     'Think before you share',
     'Check facts, not feelings',
     'Calm minds keep communities safe',
   ]
+  const badges = [
+    ['🔎', 'Fact Finder', s1 >= 5],
+    ['📎', 'Source Sleuth', s2 >= 4],
+    ['💬', 'Calm Communicator', s3 >= 3],
+    ['🛡️', 'Safety Guardian', missionComplete || score >= 600],
+    ['⭐', 'Thoughtful Sharer', grade === 'A' || grade === 'B'],
+  ] as const
 
   return (
     <div
@@ -989,78 +1015,101 @@ export function Results() {
 
       <div className="results-v2">
         <div className="results-v2__banner">
+          <span className="results-v2__spark" aria-hidden="true">
+            ✦
+          </span>
           <span className="results-v2__banner-icon">✓</span>
-          <div>
+          <div className="results-v2__banner-copy">
             <h2>MISSION COMPLETE!</h2>
             <p>You investigated before sharing. Great job!</p>
           </div>
+          <span className="results-v2__spark" aria-hidden="true">
+            ✦
+          </span>
         </div>
 
         <div className="results-v2__grid">
-          <div className="results-v2__score">
+          <section className="results-v2__score" aria-label="Your final score">
             <div className="results-v2__score-head">YOUR FINAL SCORE</div>
             <div className="results-v2__shield">
-              <span className="results-v2__wreath">🌿</span>
-              <div className="results-v2__grade-badge">{grade}</div>
-              <span className="results-v2__wreath">🌿</span>
+              <span className="results-v2__wreath" aria-hidden="true">
+                🌿
+              </span>
+              <div className={`results-v2__grade-badge grade-${grade}`}>{grade}</div>
+              <span className="results-v2__wreath" aria-hidden="true">
+                🌿
+              </span>
             </div>
-            <div className="results-v2__score-num">{score} / 1000</div>
+            <div className="results-v2__score-num">
+              <strong>{score}</strong> / 1000
+            </div>
             <div className="results-v2__ribbon">{title}</div>
             <p className="results-v2__score-desc">
               You practiced critical thinking and helped stop misinformation from spreading.
             </p>
             <div className="results-v2__badges-head">BADGES EARNED</div>
             <div className="results-v2__badges">
-              {[
-                ['🔎', 'Fact Finder'],
-                ['📎', 'Source Sleuth'],
-                ['💬', 'Calm Communicator'],
-                ['🛡️', 'Safety Guardian'],
-                ['⭐', 'Thoughtful Sharer'],
-              ].map(([icon, label]) => (
-                <div key={label} className="results-v2__badge">
+              {badges.map(([icon, label, earned]) => (
+                <div key={label} className={`results-v2__badge${earned ? '' : ' is-locked'}`}>
                   <span>{icon}</span>
                   <small>{label}</small>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="results-v2__feedback">
+          <section className="results-v2__feedback" aria-label="Feedback">
             <div className="results-v2__fb results-v2__fb--good">
-              <h4>⭐ WHAT YOU DID WELL</h4>
-              <ul>
-                {s1 >= 5 ? <li>You checked the source carefully.</li> : null}
-                {s2 >= 4 ? <li>You analyzed the image and post for red flags.</li> : null}
-                {s3 >= 3 ? <li>You evaluated comments with a critical eye.</li> : null}
-                <li>You made a calm and responsible decision.</li>
-              </ul>
+              <div className="results-v2__fb-head results-v2__fb-head--good">
+                <span>⭐</span> WHAT YOU DID WELL
+              </div>
+              <div className="results-v2__fb-body">
+                <ul>
+                  {didWell.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <img className="results-v2__scout" src={resultsScout} alt="" />
+              </div>
             </div>
+
             <div className="results-v2__fb results-v2__fb--miss">
-              <h4>⚠ WHAT YOU MISSED</h4>
-              <ul>
-                {s1 < 7 ? <li>Some account signals were sorted incorrectly ({s1}/9)</li> : null}
-                {s2 < 6 ? <li>Post clues need sharper categories ({s2}/{CLUES.length})</li> : null}
-                {s3 < 5 ? <li>A few comments were miscategorized ({s3}/6)</li> : null}
-                {s1 >= 7 && s2 >= 6 && s3 >= 5 ? (
-                  <li>You could look for more corroborating evidence from official sources.</li>
-                ) : null}
-              </ul>
+              <div className="results-v2__fb-head results-v2__fb-head--miss">
+                <span>⚠</span> WHAT YOU MISSED
+              </div>
+              <div className="results-v2__fb-body">
+                <ul>
+                  {missed.length > 0 ? (
+                    missed.map((item) => <li key={item}>{item}</li>)
+                  ) : (
+                    <li>Great work — keep verifying with official sources next time.</li>
+                  )}
+                </ul>
+                <img className="results-v2__clip" src={resultsClipboard} alt="" />
+              </div>
             </div>
+
             <div className="results-v2__fb results-v2__fb--model">
-              <h4>MODEL CALM RESPONSE (EXAMPLE)</h4>
+              <div className="results-v2__fb-head results-v2__fb-head--model">
+                MODEL CALM RESPONSE (EXAMPLE)
+              </div>
               <blockquote>
-                &ldquo;It&apos;s important to stay calm and verify information before sharing. Based
-                on what we know, the claim that &lsquo;Bến Thành Market is not safe&rsquo; is not
-                supported by reliable evidence. Let&apos;s be careful, keep others safe, and share
-                responsibly.&rdquo;
+                <span className="results-v2__quote" aria-hidden="true">
+                  “
+                </span>
+                It&apos;s important to stay calm and verify information before sharing. Based on what
+                we know, the claim that &ldquo;Bến Thành Market is not safe&rdquo; is not supported by
+                reliable evidence. Let&apos;s be careful, keep others safe, and share responsibly.
+                <span className="results-v2__quote results-v2__quote--end" aria-hidden="true">
+                  ”
+                </span>
               </blockquote>
             </div>
-          </div>
+          </section>
 
-          <div className="results-v2__side">
+          <aside className="results-v2__side">
             <div className="results-v2__progress">
-              <h4>YOUR PROGRESS</h4>
+              <div className="results-v2__side-head">YOUR PROGRESS</div>
               {[
                 ['1', 'Check the Account'],
                 ['2', 'Check the Post'],
@@ -1069,36 +1118,38 @@ export function Results() {
                 <div key={n} className="results-v2__pstep">
                   <span>{n}</span>
                   <div>
-                    {label}
-                    <small>Completed</small>
+                    <strong>{label}</strong>
+                    <small>✓ Completed</small>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="results-v2__wisdom">
-              <h4>💡 DIGITAL WISDOM TIP</h4>
-              <p>
-                Thông tin thật sự sẽ không sợ kiểm chứng. Hãy là người lan tỏa sự thật, không phải
-                tin đồn.
-              </p>
-              <div className="results-v2__wisdom-art" aria-hidden="true">
-                🏛️
-              </div>
-            </div>
-          </div>
+            <img
+              className="results-v2__tip-img"
+              src={resultsTip}
+              alt="Digital wisdom tip: Information is power, but wisdom is knowing what's true. Think, verify, then share."
+            />
+          </aside>
         </div>
 
         <div className="results-v2__bottom">
           <div className="results-v2__rewards">
             <strong>YOUR REWARDS</strong>
-            <div>
-              <span>⭐ +{stars >= 120 ? stars - 100 : 20}</span>
-              <span>🪙 +20 coins</span>
+            <div className="results-v2__reward-row">
+              <span>
+                <i aria-hidden="true">⭐</i> +{rewardStars}
+              </span>
+              <span>
+                <i aria-hidden="true">🪙</i> +20 COINS
+              </span>
             </div>
             <small>Keep going! The more you practice, the stronger your digital wisdom becomes.</small>
           </div>
 
           <div className="results-v2__reflect">
+            <div className="results-v2__reflect-head">
+              <span aria-hidden="true">💡</span> REFLECTION
+            </div>
             <strong>What did you learn today?</strong>
             <div className="results-v2__pills">
               {reflections.map((r) => (
@@ -1121,7 +1172,7 @@ export function Results() {
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value.slice(0, 120))}
-                placeholder="Write your takeaway…"
+                placeholder="Type your reflection here…"
                 maxLength={120}
                 rows={2}
               />
