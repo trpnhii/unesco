@@ -534,7 +534,7 @@ export function Step1Account() {
             type="button"
             className={`btn btn--blue${placed === 9 ? ' demo-highlight' : ''}`}
             disabled={placed < 9}
-            onClick={() => go('step2')}
+            onClick={() => go('round1')}
           >
             💾 SAVE & CONTINUE
           </button>
@@ -543,7 +543,7 @@ export function Step1Account() {
             className="btn btn--danger"
             onClick={() => {
               shareRisk()
-              go('results')
+              go('round1')
             }}
           >
             ✈️ SHARE NOW (−10)
@@ -555,7 +555,7 @@ export function Step1Account() {
 }
 
 export function Step2Post() {
-  const { go, step2, placeClue, scoreStep2, shareRisk } = useGame()
+  const { go, step2, placeClue, scoreStep2, shareRisk, finalizeMission } = useGame()
   const { dragId, setDragId, over, setOver } = useDrag()
 
   const placed = Object.values(step2).filter(Boolean).length
@@ -579,7 +579,7 @@ export function Step2Post() {
       }}
     >
       <Hud
-        backTo="step1"
+        backTo="round1"
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
         mission="INVESTIGATE BEFORE SHARING"
         step={2}
@@ -726,7 +726,8 @@ export function Step2Post() {
             className="btn btn--danger"
             onClick={() => {
               shareRisk()
-              go('results')
+              finalizeMission(true)
+              go('complete')
             }}
           >
             ✈️ SHARE NOW (−10)
@@ -756,7 +757,7 @@ export function Step3Comments() {
   function finish(sharedEarly: boolean) {
     if (sharedEarly) shareRisk()
     finalizeMission(sharedEarly)
-    go('results')
+    go('complete')
   }
 
   return (
@@ -940,6 +941,290 @@ export function Step3Comments() {
             <img src={step2BtnShare} alt="Share now, risk minus 10 points" />
           </button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function useRound1Scores() {
+  const { scoreStep1 } = useGame()
+  const s1 = scoreStep1()
+  const ratio = s1 / 9
+  const evidence = Math.round(ratio * 100)
+  const community = Math.round(ratio * 70)
+  const responsible = Math.min(100, Math.round(ratio * 85) + (s1 >= 9 ? 10 : 0))
+  const total = Math.round((evidence + community + responsible) / 3)
+  const bonus = s1 > 0 ? 10 : 0
+  return { s1, evidence, community, responsible, total, bonus }
+}
+
+function RoundScoreBars({
+  evidence,
+  community,
+  responsible,
+}: {
+  evidence: number
+  community: number
+  responsible: number
+}) {
+  return (
+    <div className="round1__bars">
+      {(
+        [
+          ['🔎', 'EVIDENCE', evidence, 'green'],
+          ['❤️', 'COMMUNITY CARE', community, 'red'],
+          ['🛡️', 'RESPONSIBLE ACTION', responsible, 'blue'],
+        ] as const
+      ).map(([icon, label, value, tone]) => (
+        <div key={label} className={`round1__bar-row round1__bar-row--${tone}`}>
+          <span className="round1__bar-icon" aria-hidden="true">
+            {icon}
+          </span>
+          <div className="round1__bar-meta">
+            <strong>{label}</strong>
+            <div className="round1__bar-track">
+              <div style={{ width: `${value}%` }} />
+            </div>
+          </div>
+          <span className="round1__bar-score">
+            {value} / 100
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function Round1Complete() {
+  const { go } = useGame()
+  const { evidence, community, responsible, total, bonus } = useRound1Scores()
+
+  return (
+    <div
+      className="screen round1-screen scene-asset"
+      style={{ backgroundImage: `url("${resultArt}")` }}
+    >
+      <Hud
+        backTo="step1"
+        caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
+        mission="INVESTIGATE BEFORE SHARING"
+        step={1}
+      />
+
+      <div className="round1">
+        <section className="round1__card" aria-label="Round 1 complete">
+          <header className="round1__header">
+            <h2>
+              <span aria-hidden="true">✨</span> ROUND 1 COMPLETE!{' '}
+              <span aria-hidden="true">✨</span>
+            </h2>
+            <p>Great start! You’re building your investigation skills.</p>
+          </header>
+
+          <div className="round1__split">
+            <div className="round1__panel round1__panel--bonus">
+              <h3>PROGRESS BONUS</h3>
+              <div className="round1__bonus-main">
+                <span aria-hidden="true">⭐</span>
+                <strong>+ {bonus} POINTS</strong>
+              </div>
+              <div className="round1__bonus-note">
+                <span aria-hidden="true">🎉</span>
+                Bonus earned for completing Round 1!
+              </div>
+            </div>
+
+            <div className="round1__panel round1__panel--scores">
+              <h3>SCORE BREAKDOWN</h3>
+              <RoundScoreBars
+                evidence={evidence}
+                community={community}
+                responsible={responsible}
+              />
+            </div>
+          </div>
+
+          <div className="round1__total">
+            <div>
+              <small>TOTAL SCORE</small>
+              <strong>
+                {total} / 100
+              </strong>
+            </div>
+            <p>Keep it up! Every round makes you better at spotting what really matters.</p>
+          </div>
+
+          <div className="round1__actions">
+            <button
+              type="button"
+              className="round1__btn round1__btn--blue"
+              onClick={() => go('round1Detail')}
+            >
+              💾 VIEW DETAILS
+            </button>
+            <button
+              type="button"
+              className="round1__btn round1__btn--red demo-highlight"
+              onClick={() => go('step2')}
+            >
+              CONTINUE TO ROUND 2 →
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  )
+}
+
+export function Round1Detail() {
+  const { go } = useGame()
+  const { evidence, community, responsible, total, bonus, s1 } = useRound1Scores()
+
+  const didGreat = [
+    s1 >= 4
+      ? ['🔎', 'You checked the source. Great job verifying the account type and history!']
+      : null,
+    s1 >= 6
+      ? ['📋', 'You looked for evidence. You paid attention to the account clues and warning signs.']
+      : null,
+    s1 >= 3
+      ? ['👥', 'You considered the community. You thought about different perspectives and impact.']
+      : null,
+    ['✅', 'You made a calm and responsible decision by investigating before sharing.'],
+  ].filter(Boolean) as [string, string][]
+
+  const improve = [
+    s1 < 7
+      ? ['🖼️', 'Content / source signals. Some account clues were sorted incorrectly — double-check history and verification.']
+      : null,
+    s1 < 9
+      ? ['📎', 'Lack of evidence. Watch for missing sources, time, and location in sensational posts.']
+      : null,
+    s1 < 8
+      ? ['📣', 'Intent to manipulate. Captions that use fear and urgency push you to react quickly.']
+      : null,
+    s1 >= 9
+      ? ['🔍', 'Keep looking for corroborating evidence from official local sources.']
+      : null,
+  ].filter(Boolean) as [string, string][]
+
+  const tips = [
+    ['🎯', 'Check the source first. Who posted it? Are they credible and relevant?'],
+    ['🔎', 'Look for solid evidence. Real posts usually include time, place, and verified information.'],
+    ['👥', 'Check the bigger picture. Compare with other sources and local context.'],
+    ['🛡️', 'Pause before you act. Ask yourself: What’s the impact of sharing this?'],
+  ]
+
+  return (
+    <div
+      className="screen round1-screen scene-asset"
+      style={{ backgroundImage: `url("${resultArt}")` }}
+    >
+      <Hud
+        backTo="round1"
+        caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
+        mission="INVESTIGATE BEFORE SHARING"
+        step={1}
+      />
+
+      <div className="round1 round1--detail">
+        <section className="round1__card round1__card--detail" aria-label="Round 1 details">
+          <div className="round1__ribbon">
+            <span aria-hidden="true">✨</span> ROUND 1 COMPLETE!{' '}
+            <span aria-hidden="true">✨</span>
+          </div>
+          <p className="round1__detail-sub">Great start! Every investigation makes you better.</p>
+
+          <div className="round1__cols">
+            <div className="round1__col round1__col--good">
+              <h3>
+                <span aria-hidden="true">⭐</span> WHAT YOU DID GREAT
+              </h3>
+              <ul>
+                {didGreat.map(([icon, text]) => (
+                  <li key={text}>
+                    <span aria-hidden="true">{icon}</span>
+                    <p>{text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="round1__col round1__col--improve">
+              <h3>
+                <span aria-hidden="true">⭐</span> WHAT TO IMPROVE
+              </h3>
+              <ul>
+                {(improve.length ? improve : [['🔍', 'Keep verifying with official sources next time.']]).map(
+                  ([icon, text]) => (
+                    <li key={text}>
+                      <span aria-hidden="true">{icon}</span>
+                      <p>{text}</p>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+
+            <div className="round1__col round1__col--tip">
+              <h3>
+                <span aria-hidden="true">💡</span> EDUCATED TIP
+              </h3>
+              <ul>
+                {tips.map(([icon, text]) => (
+                  <li key={text}>
+                    <span aria-hidden="true">{icon}</span>
+                    <p>{text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="round1__detail-foot">
+            <div className="round1__panel round1__panel--bonus">
+              <h3>PROGRESS BONUS</h3>
+              <div className="round1__bonus-main">
+                <span aria-hidden="true">⭐</span>
+                <strong>+ {bonus} POINTS</strong>
+              </div>
+              <small>Bonus earned for completing Round 1!</small>
+            </div>
+
+            <div className="round1__panel round1__panel--scores">
+              <h3>SCORE BREAKDOWN</h3>
+              <RoundScoreBars
+                evidence={evidence}
+                community={community}
+                responsible={responsible}
+              />
+            </div>
+
+            <div className="round1__panel round1__panel--total">
+              <small>TOTAL SCORE</small>
+              <strong>
+                {total} / 100
+              </strong>
+            </div>
+          </div>
+
+          <div className="round1__actions">
+            <button
+              type="button"
+              className="round1__btn round1__btn--blue"
+              onClick={() => go('round1')}
+            >
+              💾 BACK TO SUMMARY
+            </button>
+            <button
+              type="button"
+              className="round1__btn round1__btn--red demo-highlight"
+              onClick={() => go('step2')}
+            >
+              CONTINUE TO ROUND 2 →
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   )

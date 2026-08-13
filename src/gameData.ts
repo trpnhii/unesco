@@ -6,6 +6,8 @@ export type Screen =
   | 'step1'
   | 'step2'
   | 'step3'
+  | 'round1'
+  | 'round1Detail'
   | 'results'
   | 'complete'
 

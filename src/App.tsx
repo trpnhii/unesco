@@ -4,6 +4,8 @@ import {
   CaseBrief,
   MissionIntro,
   Results,
+  Round1Complete,
+  Round1Detail,
   StageComplete,
   Step1Account,
   Step2Post,
@@ -29,6 +31,10 @@ function Router() {
       return <Step2Post />
     case 'step3':
       return <Step3Comments />
+    case 'round1':
+      return <Round1Complete />
+    case 'round1Detail':
+      return <Round1Detail />
     case 'results':
       return <Results />
     case 'complete':

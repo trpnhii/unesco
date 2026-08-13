@@ -46,6 +46,8 @@ const SCREENS: Screen[] = [
   'intro',
   'brief',
   'step1',
+  'round1',
+  'round1Detail',
   'step2',
   'step3',
   'results',
