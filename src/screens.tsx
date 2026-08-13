@@ -47,9 +47,6 @@ import briefStartButton from '../assets/Screen 4_ LV1 - Case Brief/brief-start-b
 import stepOneArt from '../assets/Screen 5_ LV1 - Step 1/Image 21_07_21.png'
 import step1SourceCard from '../assets/Screen 5_ LV1 - Step 1/source-account-card.png'
 import investigationArt from '../assets/Screen 6_ LV1 - Step 2/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
-import step2Bonus from '../assets/Screen 6_ LV1 - Step 2/step2-bonus.png'
-import step2BtnSave from '../assets/Screen 6_ LV1 - Step 2/btn-save.png'
-import step2BtnShare from '../assets/Screen 6_ LV1 - Step 2/btn-share.png'
 import resultArt from '../assets/Screen 8_ LV1 - End/Image 21_25_43.png'
 import resultsTip from '../assets/Screen 8_ LV1 - End/results-tip.png'
 import step3Art from '../assets/Screen 7_ LV1 - Step 3/eca4b6ed-c5ac-4993-b566-5764692ca743.png'
@@ -739,12 +736,13 @@ export function Step2Post() {
 }
 
 export function Step3Comments() {
-  const { go, step3, placeComment, shareRisk } = useGame()
+  const { go, step3, placeComment, scoreStep3, shareRisk } = useGame()
   const { dragId, setDragId, over, setOver } = useDrag()
 
   const placed = Object.values(step3).filter(Boolean).length
   const unplaced = COMMENTS.filter((c) => !step3[c.id])
   const categories = Object.keys(COMMENT_LABELS) as CommentCategory[]
+  const total = COMMENTS.length
 
   function onDrop(cat: CommentCategory) {
     if (dragId) {
@@ -916,28 +914,27 @@ export function Step3Comments() {
         </div>
       </div>
 
-      <div className="invest__footer step3-footer">
-        <div className="step2-bonus-wrap">
-          <img className="step2-bonus-img" src={step2Bonus} alt="Progress bonus" />
+      <div className="invest__footer step2-footer step3-footer">
+        <div className="bonus">
+          ⭐ Progress bonus · classify all correctly for +10 · {scoreStep3()}/{total}
         </div>
-        <div className="step3-progress">
-          <strong>PROGRESS</strong>
-          <span>Đã phân loại: {placed}/6</span>
-          <div className="step3-progress__bar">
-            <div style={{ width: `${(placed / 6) * 100}%` }} />
+        <div className="progress-mini">
+          PROGRESS · {placed}/{total}
+          <div className="bar">
+            <div style={{ width: `${(placed / total) * 100}%` }} />
           </div>
         </div>
         <div className="step2-actions">
           <button
             type="button"
-            className={`step2-img-btn${placed === 6 ? ' demo-highlight' : ''}`}
-            disabled={placed < 6}
+            className={`btn btn--blue${placed === total ? ' demo-highlight' : ''}`}
+            disabled={placed < total}
             onClick={() => finish(false)}
           >
-            <img src={step2BtnSave} alt="Save and continue" />
+            💾 SAVE & CONTINUE
           </button>
-          <button type="button" className="step2-img-btn" onClick={() => finish(true)}>
-            <img src={step2BtnShare} alt="Share now, risk minus 10 points" />
+          <button type="button" className="btn btn--danger" onClick={() => finish(true)}>
+            ✈️ SHARE NOW (−10)
           </button>
         </div>
       </div>
