@@ -11,6 +11,7 @@ import {
   type ClueCategory,
   type CommentCategory,
   type EvidenceCategory,
+  type Screen,
 } from './gameData'
 import { useGame } from './GameContext'
 import worldMapArt from '../assets/Screen 1_ Chọn vùng (location)/Image 20_23_37.png'
@@ -555,7 +556,7 @@ export function Step1Account() {
 }
 
 export function Step2Post() {
-  const { go, step2, placeClue, scoreStep2, shareRisk, finalizeMission } = useGame()
+  const { go, step2, placeClue, scoreStep2, shareRisk } = useGame()
   const { dragId, setDragId, over, setOver } = useDrag()
 
   const placed = Object.values(step2).filter(Boolean).length
@@ -717,7 +718,7 @@ export function Step2Post() {
             type="button"
             className={`btn btn--blue${placed === total ? ' demo-highlight' : ''}`}
             disabled={placed < total}
-            onClick={() => go('step3')}
+            onClick={() => go('round2')}
           >
             💾 SAVE & CONTINUE
           </button>
@@ -726,8 +727,7 @@ export function Step2Post() {
             className="btn btn--danger"
             onClick={() => {
               shareRisk()
-              finalizeMission(true)
-              go('complete')
+              go('round2')
             }}
           >
             ✈️ SHARE NOW (−10)
@@ -739,7 +739,7 @@ export function Step2Post() {
 }
 
 export function Step3Comments() {
-  const { go, step3, placeComment, shareRisk, finalizeMission } = useGame()
+  const { go, step3, placeComment, shareRisk } = useGame()
   const { dragId, setDragId, over, setOver } = useDrag()
 
   const placed = Object.values(step3).filter(Boolean).length
@@ -756,8 +756,7 @@ export function Step3Comments() {
 
   function finish(sharedEarly: boolean) {
     if (sharedEarly) shareRisk()
-    finalizeMission(sharedEarly)
-    go('complete')
+    go('round3')
   }
 
   return (
@@ -768,7 +767,7 @@ export function Step3Comments() {
       }}
     >
       <Hud
-        backTo="step2"
+        backTo="round2"
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
         mission="INVESTIGATE BEFORE SHARING"
         step={3}
@@ -946,16 +945,328 @@ export function Step3Comments() {
   )
 }
 
-function useRound1Scores() {
-  const { scoreStep1 } = useGame()
+type RoundNum = 1 | 2 | 3
+
+type FeedbackItem = { icon: string; title?: string; text: string }
+
+const ROUND_META: Record<
+  RoundNum,
+  {
+    summary: Screen
+    detail: Screen
+    backFromSummary: Screen
+    next: Screen
+    subtitle: string
+    detailSub: string
+    totalNote: string
+    detailTotalNote: string
+    continueLabel: string
+    tipsTitle: string
+    finishMission?: boolean
+  }
+> = {
+  1: {
+    summary: 'round1',
+    detail: 'round1Detail',
+    backFromSummary: 'step1',
+    next: 'step2',
+    subtitle: 'Great start! You’re building your investigation skills.',
+    detailSub: 'Great start! Every investigation makes you better.',
+    totalNote: 'Keep it up! Every round makes you better at spotting what really matters.',
+    detailTotalNote: 'Keep it up! Every round makes you better at spotting what really matters.',
+    continueLabel: 'CONTINUE TO ROUND 2 →',
+    tipsTitle: 'EDUCATED TIP',
+  },
+  2: {
+    summary: 'round2',
+    detail: 'round2Detail',
+    backFromSummary: 'step2',
+    next: 'step3',
+    subtitle: 'Great job! You’re getting better at spotting what really matters.',
+    detailSub: 'Great progress! Let’s reflect and keep improving.',
+    totalNote: 'You’re improving! Keep going and level up your detective skills.',
+    detailTotalNote: 'Keep going! You’re on the right track.',
+    continueLabel: 'CONTINUE TO ROUND 3 →',
+    tipsTitle: 'EDUCATED TIPS',
+  },
+  3: {
+    summary: 'round3',
+    detail: 'round3Detail',
+    backFromSummary: 'step3',
+    next: 'complete',
+    subtitle: 'Amazing! You completed the investigation. You’re ready to make a difference!',
+    detailSub:
+      'Amazing! You completed the investigation. Reflect on your progress and keep making a positive impact!',
+    totalNote: 'Outstanding work! You’re a responsible digital citizen!',
+    detailTotalNote: 'Outstanding work! You’re making the digital world safer!',
+    continueLabel: 'FINISH MISSION',
+    tipsTitle: 'EDUCATED TIPS',
+    finishMission: true,
+  },
+}
+
+function useRoundScores(round: RoundNum) {
+  const { scoreStep1, scoreStep2, scoreStep3 } = useGame()
   const s1 = scoreStep1()
-  const ratio = s1 / 9
-  const evidence = Math.round(ratio * 100)
-  const community = Math.round(ratio * 70)
-  const responsible = Math.min(100, Math.round(ratio * 85) + (s1 >= 9 ? 10 : 0))
-  const total = Math.round((evidence + community + responsible) / 3)
-  const bonus = s1 > 0 ? 10 : 0
-  return { s1, evidence, community, responsible, total, bonus }
+  const s2 = scoreStep2()
+  const s3 = scoreStep3()
+
+  const r1e = Math.round((s1 / 9) * 100)
+  const r1c = Math.round((s1 / 9) * 70)
+  const r1r = Math.min(100, Math.round((s1 / 9) * 85) + (s1 >= 9 ? 10 : 0))
+
+  const r2e = r1e + Math.round((s2 / CLUES.length) * 80)
+  const r2c = r1c + Math.round((s2 / CLUES.length) * 55)
+  const r2r = r1r + Math.round((s2 / CLUES.length) * 50)
+
+  const r3e = r2e + Math.round((s3 / 6) * 90)
+  const r3c = r2c + Math.round((s3 / 6) * 80)
+  const r3r = r2r + Math.round((s3 / 6) * 85)
+
+  if (round === 1) {
+    const evidence = r1e
+    const community = r1c
+    const responsible = r1r
+    return {
+      s1,
+      s2,
+      s3,
+      evidence,
+      community,
+      responsible,
+      total: Math.round((evidence + community + responsible) / 3),
+      totalMax: 100,
+      bonus: 10,
+    }
+  }
+
+  if (round === 2) {
+    const evidence = r2e
+    const community = r2c
+    const responsible = r2r
+    return {
+      s1,
+      s2,
+      s3,
+      evidence,
+      community,
+      responsible,
+      total: Math.min(300, Math.round((evidence + community + responsible) / 2)),
+      totalMax: 300,
+      bonus: 20,
+    }
+  }
+
+  const evidence = r3e
+  const community = r3c
+  const responsible = r3r
+  return {
+    s1,
+    s2,
+    s3,
+    evidence,
+    community,
+    responsible,
+    total: evidence + community + responsible,
+    totalMax: 300,
+    bonus: 30,
+  }
+}
+
+function roundFeedback(round: RoundNum, s1: number) {
+  if (round === 1) {
+    const didGreat: FeedbackItem[] = [
+      s1 >= 4
+        ? {
+            icon: '🔎',
+            text: 'You checked the source. Great job verifying the account type and history!',
+          }
+        : null,
+      s1 >= 6
+        ? {
+            icon: '📋',
+            text: 'You looked for evidence. You paid attention to the account clues and warning signs.',
+          }
+        : null,
+      s1 >= 3
+        ? {
+            icon: '👥',
+            text: 'You considered the community. You thought about different perspectives and impact.',
+          }
+        : null,
+      {
+        icon: '✅',
+        text: 'You made a calm and responsible decision by investigating before sharing.',
+      },
+    ].filter(Boolean) as FeedbackItem[]
+
+    const improve: FeedbackItem[] = [
+      s1 < 7
+        ? {
+            icon: '🖼️',
+            text: 'Content / source signals. Some account clues were sorted incorrectly — double-check history and verification.',
+          }
+        : null,
+      s1 < 9
+        ? {
+            icon: '📎',
+            text: 'Lack of evidence. Watch for missing sources, time, and location in sensational posts.',
+          }
+        : null,
+      s1 < 8
+        ? {
+            icon: '📣',
+            text: 'Intent to manipulate. Captions that use fear and urgency push you to react quickly.',
+          }
+        : null,
+      s1 >= 9
+        ? {
+            icon: '🔍',
+            text: 'Keep looking for corroborating evidence from official local sources.',
+          }
+        : null,
+    ].filter(Boolean) as FeedbackItem[]
+
+    const tips: FeedbackItem[] = [
+      {
+        icon: '🎯',
+        text: 'Check the source first. Who posted it? Are they credible and relevant?',
+      },
+      {
+        icon: '🔎',
+        text: 'Look for solid evidence. Real posts usually include time, place, and verified information.',
+      },
+      {
+        icon: '👥',
+        text: 'Check the bigger picture. Compare with other sources and local context.',
+      },
+      {
+        icon: '🛡️',
+        text: 'Pause before you act. Ask yourself: What’s the impact of sharing this?',
+      },
+    ]
+    return { didGreat, improve, tips }
+  }
+
+  if (round === 2) {
+    return {
+      didGreat: [
+        {
+          icon: '🔎',
+          title: 'Stronger evidence check',
+          text: 'You looked closer at clues in the post and sorted warning signs more carefully.',
+        },
+        {
+          icon: '👥',
+          title: 'Community awareness',
+          text: 'You thought about how misleading posts can affect people around you.',
+        },
+        {
+          icon: '✅',
+          title: 'Responsible mindset',
+          text: 'You kept investigating instead of reacting too quickly.',
+        },
+      ],
+      improve: [
+        {
+          icon: '🖼️',
+          title: 'Content manipulation',
+          text: 'Some images or edits can still look convincing — check lighting, blur, and odd details.',
+        },
+        {
+          icon: '📎',
+          title: 'Lack of context',
+          text: 'Posts may skip time, place, or reliable sources. Ask what information is missing.',
+        },
+        {
+          icon: '📣',
+          title: 'Intent to manipulate',
+          text: 'Fear and urgency in captions are designed to push fast sharing.',
+        },
+      ],
+      tips: [
+        {
+          icon: '🎯',
+          title: 'S.T.O.P. before you share',
+          text: 'Stop, Think, Observe, Proceed — a short pause can prevent harm.',
+        },
+        {
+          icon: '🔎',
+          title: 'Verify across multiple sources',
+          text: 'One post is not enough. Compare with trusted local and official sources.',
+        },
+        {
+          icon: '👥',
+          title: 'Focus on details',
+          text: 'Look for time, place, author, and whether the claim can be checked.',
+        },
+        {
+          icon: '🛡️',
+          title: 'Think about the impact',
+          text: 'Ask who could be hurt if this turns out to be false.',
+        },
+      ],
+    }
+  }
+
+  return {
+    didGreat: [
+      {
+        icon: '🔎',
+        title: 'Thorough evidence verification',
+        text: 'You checked multiple reliable signals and confirmed the facts carefully.',
+      },
+      {
+        icon: '👥',
+        title: 'Considered different perspectives',
+        text: 'You understood the impact on the community and others.',
+      },
+      {
+        icon: '🛡️',
+        title: 'Took responsible action',
+        text: 'You considered the potential harm before deciding whether to share.',
+      },
+    ],
+    improve: [
+      {
+        icon: '🖼️',
+        title: 'Watch for manipulation',
+        text: 'Some posts may still try to trigger emotions. Look for unusual language, urgent tone, or edited visuals.',
+      },
+      {
+        icon: '📎',
+        title: 'Check deeper context',
+        text: 'There may be missing background information. Look into why, how, and what happened in detail.',
+      },
+      {
+        icon: '📣',
+        title: 'Source transparency',
+        text: 'Not all sources clearly show their author or method. Prioritize sources that are transparent and accountable.',
+      },
+    ],
+    tips: [
+      {
+        icon: '🎯',
+        title: 'S.T.O.P. before you share',
+        text: 'Stop - Think - Observe - Proceed. A few seconds can prevent the spread of misinformation.',
+      },
+      {
+        icon: '🔎',
+        title: 'Use the 5W1H method',
+        text: 'Who, What, When, Where, Why and How. It helps you understand the full story.',
+      },
+      {
+        icon: '👥',
+        title: 'Cross-check, then decide',
+        text: 'Compare across different types of sources: news, official pages, experts, local reports.',
+      },
+      {
+        icon: '🛡️',
+        title: 'Share responsibly',
+        text: 'If you share, add context or reliable sources to help others understand the truth.',
+      },
+    ],
+  }
 }
 
 function RoundScoreBars({
@@ -983,7 +1294,7 @@ function RoundScoreBars({
           <div className="round1__bar-meta">
             <strong>{label}</strong>
             <div className="round1__bar-track">
-              <div style={{ width: `${value}%` }} />
+              <div style={{ width: `${Math.min(100, value)}%` }} />
             </div>
           </div>
           <span className="round1__bar-score">
@@ -995,9 +1306,15 @@ function RoundScoreBars({
   )
 }
 
-export function Round1Complete() {
-  const { go } = useGame()
-  const { evidence, community, responsible, total, bonus } = useRound1Scores()
+function RoundComplete({ round }: { round: RoundNum }) {
+  const { go, finalizeMission, missionComplete } = useGame()
+  const meta = ROUND_META[round]
+  const { evidence, community, responsible, total, totalMax, bonus } = useRoundScores(round)
+
+  function continueNext() {
+    if (meta.finishMission && !missionComplete) finalizeMission(false)
+    go(meta.next)
+  }
 
   return (
     <div
@@ -1005,20 +1322,20 @@ export function Round1Complete() {
       style={{ backgroundImage: `url("${resultArt}")` }}
     >
       <Hud
-        backTo="step1"
+        backTo={meta.backFromSummary}
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
         mission="INVESTIGATE BEFORE SHARING"
-        step={1}
+        step={round}
       />
 
       <div className="round1">
-        <section className="round1__card" aria-label="Round 1 complete">
+        <section className="round1__card" aria-label={`Round ${round} complete`}>
           <header className="round1__header">
             <h2>
-              <span aria-hidden="true">✨</span> ROUND 1 COMPLETE!{' '}
+              <span aria-hidden="true">✨</span> ROUND {round} COMPLETE!{' '}
               <span aria-hidden="true">✨</span>
             </h2>
-            <p>Great start! You’re building your investigation skills.</p>
+            <p>{meta.subtitle}</p>
           </header>
 
           <div className="round1__split">
@@ -1030,7 +1347,7 @@ export function Round1Complete() {
               </div>
               <div className="round1__bonus-note">
                 <span aria-hidden="true">🎉</span>
-                Bonus earned for completing Round 1!
+                Bonus earned for completing Round {round}!
               </div>
             </div>
 
@@ -1048,26 +1365,26 @@ export function Round1Complete() {
             <div>
               <small>TOTAL SCORE</small>
               <strong>
-                {total} / 100
+                {total} / {totalMax}
               </strong>
             </div>
-            <p>Keep it up! Every round makes you better at spotting what really matters.</p>
+            <p>{meta.totalNote}</p>
           </div>
 
           <div className="round1__actions">
             <button
               type="button"
               className="round1__btn round1__btn--blue"
-              onClick={() => go('round1Detail')}
+              onClick={() => go(meta.detail)}
             >
               💾 VIEW DETAILS
             </button>
             <button
               type="button"
               className="round1__btn round1__btn--red demo-highlight"
-              onClick={() => go('step2')}
+              onClick={continueNext}
             >
-              CONTINUE TO ROUND 2 →
+              {meta.finishMission ? `🏆 ${meta.continueLabel}` : meta.continueLabel}
             </button>
           </div>
         </section>
@@ -1076,44 +1393,16 @@ export function Round1Complete() {
   )
 }
 
-export function Round1Detail() {
-  const { go } = useGame()
-  const { evidence, community, responsible, total, bonus, s1 } = useRound1Scores()
+function RoundDetail({ round }: { round: RoundNum }) {
+  const { go, finalizeMission, missionComplete } = useGame()
+  const meta = ROUND_META[round]
+  const { evidence, community, responsible, total, totalMax, bonus, s1 } = useRoundScores(round)
+  const { didGreat, improve, tips } = roundFeedback(round, s1)
 
-  const didGreat = [
-    s1 >= 4
-      ? ['🔎', 'You checked the source. Great job verifying the account type and history!']
-      : null,
-    s1 >= 6
-      ? ['📋', 'You looked for evidence. You paid attention to the account clues and warning signs.']
-      : null,
-    s1 >= 3
-      ? ['👥', 'You considered the community. You thought about different perspectives and impact.']
-      : null,
-    ['✅', 'You made a calm and responsible decision by investigating before sharing.'],
-  ].filter(Boolean) as [string, string][]
-
-  const improve = [
-    s1 < 7
-      ? ['🖼️', 'Content / source signals. Some account clues were sorted incorrectly — double-check history and verification.']
-      : null,
-    s1 < 9
-      ? ['📎', 'Lack of evidence. Watch for missing sources, time, and location in sensational posts.']
-      : null,
-    s1 < 8
-      ? ['📣', 'Intent to manipulate. Captions that use fear and urgency push you to react quickly.']
-      : null,
-    s1 >= 9
-      ? ['🔍', 'Keep looking for corroborating evidence from official local sources.']
-      : null,
-  ].filter(Boolean) as [string, string][]
-
-  const tips = [
-    ['🎯', 'Check the source first. Who posted it? Are they credible and relevant?'],
-    ['🔎', 'Look for solid evidence. Real posts usually include time, place, and verified information.'],
-    ['👥', 'Check the bigger picture. Compare with other sources and local context.'],
-    ['🛡️', 'Pause before you act. Ask yourself: What’s the impact of sharing this?'],
-  ]
+  function continueNext() {
+    if (meta.finishMission && !missionComplete) finalizeMission(false)
+    go(meta.next)
+  }
 
   return (
     <div
@@ -1121,19 +1410,19 @@ export function Round1Detail() {
       style={{ backgroundImage: `url("${resultArt}")` }}
     >
       <Hud
-        backTo="round1"
+        backTo={meta.summary}
         caseTitle="IS BẾN THÀNH MARKET UNSAFE?"
         mission="INVESTIGATE BEFORE SHARING"
-        step={1}
+        step={round}
       />
 
       <div className="round1 round1--detail">
-        <section className="round1__card round1__card--detail" aria-label="Round 1 details">
+        <section className="round1__card round1__card--detail" aria-label={`Round ${round} details`}>
           <div className="round1__ribbon">
-            <span aria-hidden="true">✨</span> ROUND 1 COMPLETE!{' '}
+            <span aria-hidden="true">✨</span> ROUND {round} COMPLETE!{' '}
             <span aria-hidden="true">✨</span>
           </div>
-          <p className="round1__detail-sub">Great start! Every investigation makes you better.</p>
+          <p className="round1__detail-sub">{meta.detailSub}</p>
 
           <div className="round1__cols">
             <div className="round1__col round1__col--good">
@@ -1141,10 +1430,13 @@ export function Round1Detail() {
                 <span aria-hidden="true">⭐</span> WHAT YOU DID GREAT
               </h3>
               <ul>
-                {didGreat.map(([icon, text]) => (
-                  <li key={text}>
-                    <span aria-hidden="true">{icon}</span>
-                    <p>{text}</p>
+                {didGreat.map((item) => (
+                  <li key={`${item.title ?? ''}${item.text}`}>
+                    <span aria-hidden="true">{item.icon}</span>
+                    <p>
+                      {item.title ? <strong>{item.title}. </strong> : null}
+                      {item.text}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -1155,26 +1447,38 @@ export function Round1Detail() {
                 <span aria-hidden="true">⭐</span> WHAT TO IMPROVE
               </h3>
               <ul>
-                {(improve.length ? improve : [['🔍', 'Keep verifying with official sources next time.']]).map(
-                  ([icon, text]) => (
-                    <li key={text}>
-                      <span aria-hidden="true">{icon}</span>
-                      <p>{text}</p>
-                    </li>
-                  ),
-                )}
+                {(improve.length
+                  ? improve
+                  : [
+                      {
+                        icon: '🔍',
+                        text: 'Keep verifying with official sources next time.',
+                      },
+                    ]
+                ).map((item) => (
+                  <li key={`${item.title ?? ''}${item.text}`}>
+                    <span aria-hidden="true">{item.icon}</span>
+                    <p>
+                      {item.title ? <strong>{item.title}. </strong> : null}
+                      {item.text}
+                    </p>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div className="round1__col round1__col--tip">
               <h3>
-                <span aria-hidden="true">💡</span> EDUCATED TIP
+                <span aria-hidden="true">💡</span> {meta.tipsTitle}
               </h3>
               <ul>
-                {tips.map(([icon, text]) => (
-                  <li key={text}>
-                    <span aria-hidden="true">{icon}</span>
-                    <p>{text}</p>
+                {tips.map((item) => (
+                  <li key={`${item.title ?? ''}${item.text}`}>
+                    <span aria-hidden="true">{item.icon}</span>
+                    <p>
+                      {item.title ? <strong>{item.title}. </strong> : null}
+                      {item.text}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -1188,7 +1492,7 @@ export function Round1Detail() {
                 <span aria-hidden="true">⭐</span>
                 <strong>+ {bonus} POINTS</strong>
               </div>
-              <small>Bonus earned for completing Round 1!</small>
+              <small>Bonus earned for completing Round {round}!</small>
             </div>
 
             <div className="round1__panel round1__panel--scores">
@@ -1203,8 +1507,9 @@ export function Round1Detail() {
             <div className="round1__panel round1__panel--total">
               <small>TOTAL SCORE</small>
               <strong>
-                {total} / 100
+                {total} / {totalMax}
               </strong>
+              <p className="round1__detail-total-note">{meta.detailTotalNote}</p>
             </div>
           </div>
 
@@ -1212,22 +1517,46 @@ export function Round1Detail() {
             <button
               type="button"
               className="round1__btn round1__btn--blue"
-              onClick={() => go('round1')}
+              onClick={() => go(meta.summary)}
             >
               💾 BACK TO SUMMARY
             </button>
             <button
               type="button"
               className="round1__btn round1__btn--red demo-highlight"
-              onClick={() => go('step2')}
+              onClick={continueNext}
             >
-              CONTINUE TO ROUND 2 →
+              {meta.finishMission ? `🏆 ${meta.continueLabel}` : meta.continueLabel}
             </button>
           </div>
         </section>
       </div>
     </div>
   )
+}
+
+export function Round1Complete() {
+  return <RoundComplete round={1} />
+}
+
+export function Round1Detail() {
+  return <RoundDetail round={1} />
+}
+
+export function Round2Complete() {
+  return <RoundComplete round={2} />
+}
+
+export function Round2Detail() {
+  return <RoundDetail round={2} />
+}
+
+export function Round3Complete() {
+  return <RoundComplete round={3} />
+}
+
+export function Round3Detail() {
+  return <RoundDetail round={3} />
 }
 
 export function Results() {

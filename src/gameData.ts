@@ -8,6 +8,10 @@ export type Screen =
   | 'step3'
   | 'round1'
   | 'round1Detail'
+  | 'round2'
+  | 'round2Detail'
+  | 'round3'
+  | 'round3Detail'
   | 'results'
   | 'complete'
 

@@ -4567,6 +4567,14 @@ img {
   font-weight: 900;
 }
 
+.round1__detail-total-note {
+  margin-top: 0.45rem;
+  color: #4d4438;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .round1-screen .demo-highlight::before,
 .round1-screen .demo-highlight::after {
   display: none;

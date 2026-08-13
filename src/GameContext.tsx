@@ -49,7 +49,11 @@ const SCREENS: Screen[] = [
   'round1',
   'round1Detail',
   'step2',
+  'round2',
+  'round2Detail',
   'step3',
+  'round3',
+  'round3Detail',
   'results',
   'complete',
 ]
